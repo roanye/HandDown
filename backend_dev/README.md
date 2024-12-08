@@ -10,12 +10,13 @@ other infrastructure.
 
 ## Listing Access
 
-<u>Brief Description:</u> 
+**Brief Description:**
 Defines post and get functions to read and write listings.
 
-<u>Status</u> In progress...
+**Status** 
+In progress...
 
-<u>Info</u>
+**Info**
 Create Listing:
 ```
 curl -X POST -H "Content-Type: multipart/form-data" -F "title=My New Listing" -F "image=@path/to/image.jpg" http://localhost:8000/listings
