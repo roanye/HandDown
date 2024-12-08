@@ -1,0 +1,66 @@
+import firebase_admin
+from fastapi import FastAPI, File, UploadFile, HTTPException
+from firebase_admin import credentials, storage, initialize_app, firestore
+from typing import Optional
+
+app = FastAPI()
+
+cred_path = '/Users/sneak100/Desktop/HandDown-creds/handdown-private-key.json'
+cred = credentials.Certificate(cred_path)
+firebase_admin.initialize_app(cred, )
+
+db = firestore.client()
+bucket = storage.bucket()
+
+
+data = {
+        'cheeseType' : 'pookie',
+        'status' : 'cheesy'
+}
+
+@app.post("/listings")
+async def create_listing(title: str, image: UploadFile = File(...)):
+    """
+    Creates a new listing with a title and image.
+    """
+    # 1. Generate a unique ID for the listing
+    listing_id = db.collection('listings').document().id
+
+    # 2. Upload the image to Firebase Storage
+    image_blob = bucket.blob(f"listings/{listing_id}.jpg")  # Adjust file extension if needed
+    await image_blob.upload_from_file(image.file)
+
+    # 3. Store the listing data in Firestore
+    listing_data = {
+        'id': listing_id,
+        'title': title,
+        'imageUrl': f"https://firebasestorage.googleapis.com/v0/b/{bucket.name}/o/listings%2F{listing_id}.jpg?alt=media"  # Construct the public URL
+    }
+    db.collection('listings').document(listing_id).set(listing_data)
+
+    return {"message": "Listing created successfully", "listingId": listing_id}
+
+@app.get("/listings/{listing_id}")
+async def get_listing(listing_id: str):
+    """
+    Retrieves a listing by its ID.
+    """
+    listing_ref = db.collection('listings').document(listing_id)
+    listing = listing_ref.get()
+
+    if listing.exists:
+        listing_data = listing.to_dict()
+        return listing_data
+    else:
+        raise HTTPException(status_code=404, detail="Listing not found")
+
+@app.get("/listings")
+async def get_all_listings():
+    """
+    Retrieves all listings.
+    """
+    listings = []
+    for doc in db.collection('listings').stream():
+        listings.append(doc.to_dict())
+    return listings
+
