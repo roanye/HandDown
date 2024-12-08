@@ -12,12 +12,6 @@ firebase_admin.initialize_app(cred, )
 db = firestore.client()
 bucket = storage.bucket()
 
-
-data = {
-        'cheeseType' : 'pookie',
-        'status' : 'cheesy'
-}
-
 @app.post("/listings")
 async def create_listing(title: str, image: UploadFile = File(...)):
     """
@@ -64,3 +58,49 @@ async def get_all_listings():
         listings.append(doc.to_dict())
     return listings
 
+@app.put("/listings/{listing_id}")
+async def update_listing(listing_id: str, title: Optional[str] = None, image: Optional[UploadFile] = File(None)):
+    """
+    Updates an existing listing.
+    """
+    listing_ref = db.collection('listings').document(listing_id)
+    listing = listing_ref.get()
+
+    if listing.exists:
+        listing_data = listing.to_dict()
+
+        if title is not None:
+            listing_data['title'] = title
+
+        if image is not None:
+            # Upload the new image
+            image_blob = bucket.blob(f"listings/{listing_id}.jpg")
+            await image_blob.upload_from_file(image.file)
+            listing_data['imageUrl'] = f"https://firebasestorage.googleapis.com/v0/b/{bucket.name}/o/listings%2F{listing_id}.jpg?alt=media"
+
+        # Update the listing in Firestore
+        listing_ref.update(listing_data)
+
+        return {"message": "Listing updated successfully"}
+    else:
+        raise HTTPException(status_code=404, detail="Listing not found")
+
+@app.delete("/listings/{listing_id}")
+async def delete_listing(listing_id: str):
+    """
+    Deletes a listing by its ID.
+    """
+    listing_ref = db.collection('listings').document(listing_id)
+    listing = listing_ref.get()
+
+    if listing.exists:
+        # Delete the image from Firebase Storage
+        image_blob = bucket.blob(f"listings/{listing_id}.jpg")
+        await image_blob.delete()
+
+        # Delete the listing from Firestore
+        listing_ref.delete()
+
+        return {"message": "Listing deleted successfully"}
+    else:
+        raise HTTPException(status_code=404, detail="Listing not found")
