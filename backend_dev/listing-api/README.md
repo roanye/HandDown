@@ -1,12 +1,13 @@
 # Listing API
 
 ## Authors: 
-Roan Yeh & Mateo Sufuentes
+Roan Yeh
 
 ## Purpose:
-Constitutes the backend of the marketplace. Has subdirectories for 
-the recommendation algorithm and other backend APIs to connect to database and 
-other infrastructure. 
+Creates a listing with basic information, accesses a specific listing by ID, 
+deletes a listing, and accesses all listings.
+
+TODO: ADD MORE INFORMATION/ATTRIBUTES!
 
 ## Listing Access
 
