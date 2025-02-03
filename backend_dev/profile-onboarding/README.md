@@ -1,4 +1,4 @@
-# Listing API
+# Email Verification
 
 ## Authors: 
 Roan Yeh
