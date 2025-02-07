@@ -1,19 +1,13 @@
-# Email Verification
+# Profile Onboarding
 
 ## Authors: 
 Roan Yeh
 
 ## Purpose:
-Sends a verification email to an email with the @tufts.edu domain.
+Defines & implements APIs necessary for profile onboarding & signup.
 
-TODO: Check to see if email bounces (cannot reach the email)
-
-## Email Verification
-
-**Brief Description:**
-
-Checks that the submitted email is a valid Tufts email and send a 
-verification code to that address.
+Email-Verification:
+- TODO: Check to see if email bounces (cannot reach the email)
 
 **Status** 
 
@@ -21,22 +15,5 @@ In progress...
 
 **Necessary installs**
 
-Run command 
+See Necessary installs necessary on each separate API.
 
-```
-pip install -r requirements.txt  
-```
-
-**Running the API**
-
-uvicorn listing-access:app --reload
-
-**Info**
-
-To run: 
-```                
-curl -X 'POST' \
-  http://localhost:8000/send-code/ \
-  -H 'Content-Type: application/json' \
-  -d '{"email": "Roan.Yeh@tufts.edu"}'
-```
