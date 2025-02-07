@@ -48,10 +48,15 @@ curl -X 'POST' \
   -d '{"email": "Roan.Yeh@tufts.edu", "password": "ThisIzHandsD0wnMyFav@ppEver}'
 ```
 
+INPUTS: Email & password in the above json format
+OUTPUTS/RESULT: Verificaton token created in database that stores code, password, and email
+
 Verify an email (entering code):
 ```
 curl http://localhost:8000/code_entry/<code>
 ```
+INPUTS: Verification Code
+OUTPUTS/RESULT: New profile is created!
 
 ## Email Verification
 
