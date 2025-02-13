@@ -44,8 +44,8 @@ Send a verification email:
 ```                
 curl -X 'POST' \
   http://localhost:8000/email-verification/ \
-  -H 'Content-Type: application/json' \
-  -d '{"email": "Roan.Yeh@tufts.edu", "password": "ThisIzHandsD0wnMyFav@ppEver}'
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'email=Roan.Yeh@tufts.edu&password=ThisIzHandsD0wnMyFav@ppEver'
 ```
 
 INPUTS: Email & password in the above json format
@@ -57,6 +57,11 @@ curl http://localhost:8000/code_entry/<code>
 ```
 INPUTS: Verification Code
 OUTPUTS/RESULT: New profile is created!
+
+Add Basic User Info:
+```                
+curl http://localhost:8000/basic-info/UuiiyHX6uWjnqHf5UqhH/Roan/Yeh/1374301 
+```
 
 ## Email Verification
 

@@ -99,13 +99,13 @@ async def verify_email(code: str):
     if code_data.exists:
         profile_data = code_data.to_dict()
         # Create a new profile
-        create_profile(profile_data)
+        profile_id = create_profile(profile_data)
         # Delete verification "token" in DB
         db.collection('profile-verifications').document(code).delete()
         print("Deleted Verification")
         # Track that email has been logged (TO DO)
 
-        return profile_data
+        return profile_data, profile_id
     else:
         raise HTTPException(status_code=404, detail="Invalid Verification Code")
 
@@ -127,3 +127,20 @@ def create_profile(data: ProfileData):
 
     db.collection('profiles').document(profile_id).set(profile_data)
     print(f'Created profile {profile_id}')
+    return profile_id
+
+
+class BasicInfo(BaseModel):
+    fname: str
+    lname: str
+    tuftsid: str
+
+@app.post("/basic-info/{uid}")
+async def add_basic_info(uid: str, info: BasicInfo):
+    """
+    Adds First, Last Name, and Tufts ID to Profile Info
+    """
+    profile_ref = db.collection("profiles").document(uid)
+    profile_ref.set(info.dict(), merge=True)
+
+    return {"message": "Basic user info updated", "uid": uid}
