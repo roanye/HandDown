@@ -1,6 +1,7 @@
 import firebase_admin
-from fastapi import FastAPI, HTTPException, Form
-from firebase_admin import credentials, firestore
+from fastapi import FastAPI, HTTPException, Form, UploadFile, File, Body
+from firebase_admin import credentials, firestore, storage
+from typing import List
 import os
 import random
 import smtplib
@@ -15,9 +16,17 @@ app = FastAPI()
 # Firebase setup
 cred_path = '/Users/sneak100/Desktop/HandDown-creds/handdown-private-key.json'
 cred = credentials.Certificate(cred_path)
-firebase_admin.initialize_app(cred)
+firebase_admin.initialize_app(cred, {
+    'storageBucket': 'handdown-profile-photos'
+})
 
 db = firestore.client()
+bucket = storage.bucket()
+print(bucket)
+
+# =============================================================================
+#                             Email Verification
+# =============================================================================
 
 # Gmail SMTP settings 
 SMTP_SERVER = "smtp.gmail.com"
@@ -114,6 +123,10 @@ class ProfileData(TypedDict):
     email: str
     code: str
 
+# =============================================================================
+#                             Profile Creation
+# =============================================================================
+
 def create_profile(data: ProfileData):
     """
     Creates a new profile, storing uid, email, and password
@@ -135,6 +148,7 @@ class BasicInfo(BaseModel):
     lname: str
     tuftsid: str
 
+# Add basic info: first name, last name, tuftsid
 @app.post("/basic-info/{uid}")
 async def add_basic_info(uid: str, info: BasicInfo):
     """
@@ -144,3 +158,44 @@ async def add_basic_info(uid: str, info: BasicInfo):
     profile_ref.set(info.dict(), merge=True)
 
     return {"message": "Basic user info updated", "uid": uid}
+
+# Upload profile photo
+@app.post("/profile-photo/{uid}")
+async def add_profile_photo(uid: str, image: UploadFile = File(...)):
+    """
+    Adds a profile photo to a profile.
+    """
+    # 2. Upload the image to Firebase Storage
+    image_blob = bucket.blob(f"profiles/{uid}/{image.filename}")  # Include filename for organization
+    image_blob.upload_from_file(image.file)
+
+    # 3. Store profile_photo_id in the designated profile
+    profile_photo_data = {
+        'imageUrl': f"https://firebasestorage.googleapis.com/v0/b/{bucket.name}/o/profiles%2F{uid}%2F{image.filename}?alt=media" 
+    }
+    profile_ref = db.collection("profiles").document(uid)
+    profile_ref.set(profile_photo_data, merge=True)
+
+    return {"message": "Sucessfully added profile photo.", "uid": uid}
+
+# Add array of interests to user profile
+@app.post("/profile-interests/{uid}")
+async def add_user_interests(uid: str, interests: List[str] = Body(...)):
+    """
+    Adds a list of interest badges to a profile
+    """
+    profile_ref = db.collection("profiles").document(uid)
+    profile_ref.set({"interests": interests}, merge=True)
+
+    return {"message": "Interests added", "uid": uid}
+
+# Add array of interests to user profile
+@app.post("/profile-offerings/{uid}")
+async def add_user_interests(uid: str, offerings: List[str] = Body(...)):
+    """
+    Adds a list of interest badges to a profile
+    """
+    profile_ref = db.collection("profiles").document(uid)
+    profile_ref.set({"offerings": offerings}, merge=True)
+
+    return {"message": "Offerings added", "uid": uid}

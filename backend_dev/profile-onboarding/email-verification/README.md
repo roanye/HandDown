@@ -60,7 +60,32 @@ OUTPUTS/RESULT: New profile is created!
 
 Add Basic User Info:
 ```                
-curl http://localhost:8000/basic-info/UuiiyHX6uWjnqHf5UqhH/Roan/Yeh/1374301 
+curl -X 'POST' \                       
+  http://localhost:8000/basic-info/UuiiyHX6uWjnqHf5UqhH \
+  -H 'Content-Type: application/json' \
+  -d '{"fname": "Roan", "lname": "Yeh", "tuftsid": "1374301"}'
+```
+
+Add Profile Photo:
+```                
+curl -X 'POST' \
+  http://localhost:8000/profile-photo/UuiiyHX6uWjnqHf5UqhH \
+  -F "image=@/Users/sneak100/Desktop/HandDown/backend_dev/listing-api/test-images/handdown.png"
+```
+Add Interests:
+```
+curl -X 'POST' \
+  'http://localhost:8000/profile-interests/UuiiyHX6uWjnqHf5UqhH' \
+  -H 'Content-Type: application/json' \
+  -d '["Books", "Clothes", "Accessories"]'
+```
+
+Add Offerings:
+```
+curl -X 'POST' \
+  'http://localhost:8000/profile-offerings/UuiiyHX6uWjnqHf5UqhH' \
+  -H 'Content-Type: application/json' \
+  -d '["Books", "Clothes", "Accessories"]'
 ```
 
 ## Email Verification
