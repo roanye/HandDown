@@ -118,15 +118,16 @@ async def verify_email(code: str):
     else:
         raise HTTPException(status_code=404, detail="Invalid Verification Code")
 
-class ProfileData(TypedDict):
-    password: str
-    email: str
-    code: str
+
 
 # =============================================================================
 #                             Profile Creation
 # =============================================================================
-
+class ProfileData(TypedDict):
+    password: str
+    email: str
+    code: str
+    
 def create_profile(data: ProfileData):
     """
     Creates a new profile, storing uid, email, and password
