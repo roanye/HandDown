@@ -75,17 +75,17 @@ curl -X 'POST' \
 Add Interests:
 ```
 curl -X 'POST' \
-  'http://localhost:8000/profile-interests/UuiiyHX6uWjnqHf5UqhH' \
-  -H 'Content-Type: application/json' \
-  -d '["Books", "Clothes", "Accessories"]'
+  'http://localhost:8000/profile-interests/UuiiyHX6uWjnqHf5UqhH?interests=Books%20Clothes%20Accessories' \
+  -H 'Content-Type: application/json'
+
 ```
 
 Add Offerings:
 ```
 curl -X 'POST' \
-  'http://localhost:8000/profile-offerings/UuiiyHX6uWjnqHf5UqhH' \
-  -H 'Content-Type: application/json' \
-  -d '["Books", "Clothes", "Accessories"]'
+  'http://localhost:8000/profile-offerings/UuiiyHX6uWjnqHf5UqhH?offerings=Books%20Clothes%20Accessories' \
+  -H 'Content-Type: application/json'
+
 ```
 
 ## Email Verification

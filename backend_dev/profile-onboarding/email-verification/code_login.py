@@ -127,7 +127,7 @@ class ProfileData(TypedDict):
     password: str
     email: str
     code: str
-    
+
 def create_profile(data: ProfileData):
     """
     Creates a new profile, storing uid, email, and password
@@ -179,9 +179,10 @@ async def add_profile_photo(uid: str, image: UploadFile = File(...)):
 
     return {"message": "Sucessfully added profile photo.", "uid": uid}
 
+
 # Add array of interests to user profile
 @app.post("/profile-interests/{uid}")
-async def add_user_interests(uid: str, interests: List[str] = Body(...)):
+async def add_user_interests(uid: str, interests: str):
     """
     Adds a list of interest badges to a profile
     """
@@ -192,7 +193,7 @@ async def add_user_interests(uid: str, interests: List[str] = Body(...)):
 
 # Add array of interests to user profile
 @app.post("/profile-offerings/{uid}")
-async def add_user_interests(uid: str, offerings: List[str] = Body(...)):
+async def add_user_interests(uid: str, offerings: str):
     """
     Adds a list of interest badges to a profile
     """
