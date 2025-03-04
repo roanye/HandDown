@@ -35,6 +35,7 @@ async def create_listing(
     listing_type: str = Form(...),
     transaction_type: str = Form(...),
     tags: str = Form(...),
+    profile_offerer_id: str = Form(...),
     image: UploadFile = File(...)
 ):
     """
@@ -59,6 +60,7 @@ async def create_listing(
         "listing_type": listing_type,
         "transaction_type": transaction_type,
         "time_created": time_created,
+        "profile_offerer_id": profile_offerer_id,
         "tags": tags,
         "imageUrl": f"https://firebasestorage.googleapis.com/v0/b/{bucket.name}/o/listings%2F{listing_id}%2F{image.filename}?alt=media"
     }

@@ -42,6 +42,7 @@ curl -X POST "http://127.0.0.1:8000/listings" \
   -F "price=27" \
   -F "listing_type=listing" \
   -F "transaction_type=sell" \
+  -F ""profile_offerer_id=UuiiyHX6uWjnqHf5UqhH" \
   -F "tags=home decor" \
   -F "image=@/Users/sneak100/Desktop/HandDown/backend_dev/listing-api/test-images/banama.jpeg"
 ```
