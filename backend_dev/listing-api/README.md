@@ -21,7 +21,7 @@ In progress...
 
 **Necessary installs**
 
-uvicorn, fastapi, firebase-admin
+uvicorn, fastapi, firebase-admin, pytz
 
 **Running the API**
 
@@ -31,11 +31,15 @@ uvicorn listing-access:app --reload
 
 Create Listing:
 ```
-curl -X POST \
--H "Content-Type: multipart/form-data" \
--F "title=Logo" \
--F "image=@/Users/sneak100/Desktop/HandDown/backend_dev/listing-api/test-images/handdown.png" \
-http://localhost:8000/listings
+curl -X POST "http://127.0.0.1:8000/listings" \
+  -H "Content-Type: multipart/form-data" \
+  -F "title=Banama" \
+  -F "long_description=A classic vintage banama in excellent condition." \
+  -F "price=27" \
+  -F "listing_type=listing" \
+  -F "transaction_type=sell" \
+  -F "tags=home decor" \
+  -F "image=@/Users/sneak100/Desktop/HandDown/backend_dev/listing-api/test-images/banama.jpeg"
 ```
 
 Get Listing:
@@ -57,6 +61,8 @@ Delete Listing: NOT IMPLEMENTED AS OF NOW
 ```
 curl -X DELETE http://localhost:8000/listings/listing_id
 ```
+
+
 
 
 

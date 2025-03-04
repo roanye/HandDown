@@ -1,8 +1,11 @@
 import firebase_admin
 from fastapi import FastAPI, File, UploadFile, HTTPException, Form
 from firebase_admin import credentials, storage, initialize_app, firestore
-from typing import Optional
+from typing import Optional, List
+from pydantic import BaseModel
 import os
+from datetime import datetime
+import pytz
 
 app = FastAPI()
 
@@ -16,25 +19,52 @@ db = firestore.client()
 bucket = storage.bucket()
 print(bucket)
 
+class ListingInfo(BaseModel):
+    title: str
+    long_description: str
+    price: int
+    listing_type: str
+    transaction_type: str
+    tags: str
+    
 @app.post("/listings")
-async def create_listing(title: str = Form(...), image: UploadFile = File(...)):
+async def create_listing(
+    title: str = Form(...),
+    long_description: str = Form(...),
+    price: int = Form(...),
+    listing_type: str = Form(...),
+    transaction_type: str = Form(...),
+    tags: str = Form(...),
+    image: UploadFile = File(...)
+):
     """
     Creates a new listing with a title and image.
     """
+    # Get time this listing was posted
+    time_created = datetime.now(pytz.utc).isoformat()
+
     # 1. Generate a unique ID for the listing
-    listing_id = db.collection('listings').document().id
+    listing_id = db.collection("listings").document().id
 
     # 2. Upload the image to Firebase Storage
-    image_blob = bucket.blob(f"listings/{listing_id}/{image.filename}")  # Include filename for organization
+    image_blob = bucket.blob(f"listings/{listing_id}/{image.filename}")
     image_blob.upload_from_file(image.file)
 
-    # 3. Store the listing data in Firestore
+    # 3. Create the listing dictionary
     listing_data = {
-        'id': listing_id,
-        'title': title,
-        'imageUrl': f"https://firebasestorage.googleapis.com/v0/b/{bucket.name}/o/listings%2F{listing_id}%2F{image.filename}?alt=media"  # Construct the public URL
+        "id": listing_id,
+        "title": title,
+        "long_description": long_description,
+        "price": price,
+        "listing_type": listing_type,
+        "transaction_type": transaction_type,
+        "time_created": time_created,
+        "tags": tags,
+        "imageUrl": f"https://firebasestorage.googleapis.com/v0/b/{bucket.name}/o/listings%2F{listing_id}%2F{image.filename}?alt=media"
     }
-    db.collection('listings').document(listing_id).set(listing_data)
+
+    # 4. Save to Firestore
+    db.collection("listings").document(listing_id).set(listing_data)
 
     return {"message": "Listing created successfully", "listingId": listing_id}
 
@@ -63,6 +93,26 @@ async def get_all_listings():
         listings.append(doc.to_dict())
     return listings
 
+
+@app.get("/delete-listing/{listing_id}")
+async def verify_email(listing_id: str):
+    """
+    Deletes a listing given a listing_id
+    """
+
+    code_ref = db.collection('listings').document(listing_id)
+    code_data = code_ref.get()
+
+    if code_data.exists:
+        # Delete listing in DB
+        db.collection('listings').document(listing_id).delete()
+        print("Deleted Listing")
+
+        return listing_id
+    else:
+        raise HTTPException(status_code=404, detail="Invalid Listing")
+
+    
 # @app.put("/listings/{listing_id}")
 # async def update_listing(listing_id: str, title: Optional[str] = None, image: Optional[UploadFile] = File(None)):
 #     """
@@ -90,22 +140,3 @@ async def get_all_listings():
 #     else:
 #         raise HTTPException(status_code=404, detail="Listing not found")
 
-# @app.delete("/listings/{listing_id}")
-# async def delete_listing(listing_id: str):
-#     """
-#     Deletes a listing by its ID.
-#     """
-#     listing_ref = db.collection('listings').document(listing_id)
-#     listing = listing_ref.get()
-
-#     if listing.exists:
-#         # Delete the image from Firebase Storage
-#         image_blob = bucket.blob(f"listings/{listing_id}.jpg")
-#         await image_blob.delete()
-
-#         # Delete the listing from Firestore
-#         listing_ref.delete()
-
-#         return {"message": "Listing deleted successfully"}
-#     else:
-#         raise HTTPException(status_code=404, detail="Listing not found")
