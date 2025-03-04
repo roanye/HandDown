@@ -59,7 +59,7 @@ curl -X PUT -H "Content-Type: multipart/form-data" -F "title=Updated Title" -F "
 
 Delete Listing: NOT IMPLEMENTED AS OF NOW
 ```
-curl -X DELETE http://localhost:8000/listings/listing_id
+curl -X GET  http://localhost:8000/delete-listing/6QWaFwpuNrXk4KTKo5cD
 ```
 
 
