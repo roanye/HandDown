@@ -21,7 +21,11 @@ In progress...
 
 **Necessary installs**
 
-uvicorn, fastapi, firebase-admin, pytz
+Run command 
+
+```
+pip install -r requirements.txt  
+```
 
 **Running the API**
 
