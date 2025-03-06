@@ -97,7 +97,7 @@ async def get_all_listings():
 
 
 @app.get("/delete-listing/{listing_id}")
-async def verify_email(listing_id: str):
+async def delete_listing(listing_id: str):
     """
     Deletes a listing given a listing_id
     """
