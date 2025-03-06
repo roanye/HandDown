@@ -53,15 +53,14 @@ OUTPUTS/RESULT: Verificaton token created in database that stores code, password
 
 Verify an email (entering code):
 ```
-curl http://localhost:8000/code_entry/<code>
+curl http://localhost:8000/code-entry/<code>
 ```
 INPUTS: Verification Code
 OUTPUTS/RESULT: New profile is created!
 
 Add Basic User Info:
 ```                
-curl -X 'POST' \                       
-  http://localhost:8000/basic-info/UuiiyHX6uWjnqHf5UqhH \
+curl -X 'POST' 'http://localhost:8000/basic-info/UuiiyHX6uWjnqHf5UqhH' \
   -H 'Content-Type: application/json' \
   -d '{"fname": "Roan", "lname": "Yeh", "tuftsid": "1374301"}'
 ```
@@ -85,10 +84,9 @@ Add Offerings:
 curl -X 'POST' \
   'http://localhost:8000/profile-offerings/UuiiyHX6uWjnqHf5UqhH?offerings=Books%20Clothes%20Accessories' \
   -H 'Content-Type: application/json'
-
 ```
 
-## Email Verification
+## Email Verification (Phased out)
 
 **Brief Description:**
 

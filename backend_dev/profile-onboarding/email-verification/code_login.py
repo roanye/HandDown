@@ -157,6 +157,9 @@ async def add_basic_info(uid: str, info: BasicInfo):
     """
     profile_ref = db.collection("profiles").document(uid)
     profile_ref.set(info.dict(), merge=True)
+    
+    # Initialize a new empty array for interested listings
+    profile_ref.set({"Interested": []}, merge=True)
 
     return {"message": "Basic user info updated", "uid": uid}
 
