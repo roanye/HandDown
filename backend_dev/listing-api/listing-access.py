@@ -62,7 +62,7 @@ async def create_listing(
         "time_created": time_created,
         "profile_offerer_id": profile_offerer_id,
         "tags": tags,
-        "Interested-users": [],
+        "Interested_users": [],
         "imageUrl": f"https://firebasestorage.googleapis.com/v0/b/{bucket.name}/o/listings%2F{listing_id}%2F{image.filename}?alt=media"
     }
 
