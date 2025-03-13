@@ -49,8 +49,14 @@ async def swipe_right(uid: str, listing_id: str):
 
         TO DO: CONNECTS TO MATEO'S ALGORITHM!!!
         '''
+
+        # Add listing to profile's interested parking lot
         profile_ref = db.collection('profiles').document(uid)
         profile_ref.update({"Interested": firestore.ArrayUnion([listing_id])})
+
+        # Add profile to listings interested users
+        listing_ref = db.collection('listings').document(listing_id)
+        listing_ref.update({"Interested_users": firestore.ArrayUnion([uid])})
 
         return {"message": "Interested in this listing", "uid": uid, "listing_id": listing_id} 
 
