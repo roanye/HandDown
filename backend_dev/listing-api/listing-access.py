@@ -62,11 +62,17 @@ async def create_listing(
         "time_created": time_created,
         "profile_offerer_id": profile_offerer_id,
         "tags": tags,
+        "Interested-users": [],
         "imageUrl": f"https://firebasestorage.googleapis.com/v0/b/{bucket.name}/o/listings%2F{listing_id}%2F{image.filename}?alt=media"
     }
 
     # 4. Save to Firestore
     db.collection("listings").document(listing_id).set(listing_data)
+    
+    # 5. Add listing to profile offer's informaton
+    profile_ref = db.collection("profiles").document(profile_offerer_id)
+
+    profile_ref.update({"Current_listings": firestore.ArrayUnion([listing_id])})
 
     return {"message": "Listing created successfully", "listingId": listing_id}
 
@@ -102,10 +108,15 @@ async def delete_listing(listing_id: str):
     Deletes a listing given a listing_id
     """
 
-    code_ref = db.collection('listings').document(listing_id)
-    code_data = code_ref.get()
+    # TO DO: 
+    # - delete all messages related to listing
+    # - delete all mentions of listing ID in other profiles
 
-    if code_data.exists:
+
+    listing_ref = db.collection('listings').document(listing_id)
+    listing_data = listing_ref.get()
+
+    if listing_data.exists:
         # Delete listing in DB
         db.collection('listings').document(listing_id).delete()
         print("Deleted Listing")
