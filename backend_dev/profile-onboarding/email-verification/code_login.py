@@ -161,6 +161,9 @@ async def add_basic_info(uid: str, info: BasicInfo):
     # Initialize a new empty array for interested listings
     profile_ref.set({"Interested": []}, merge=True)
 
+    # Initialize a new empty array for current listings
+    profile_ref.set({"Current_listings": []}, merge=True)
+
     return {"message": "Basic user info updated", "uid": uid}
 
 # Upload profile photo
