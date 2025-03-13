@@ -17,9 +17,9 @@ async def login(email: str = Form(...), password: str = Form(...)):
     '''
     Logs a user into their account given an email and password
     '''
-
+    email_lower = email.lower()
     # Query the database for the inputted email
-    profile_ref = db.collection('profiles').where(filter=FieldFilter("email", "==", email)).limit(1).stream()
+    profile_ref = db.collection('profiles').where(filter=FieldFilter("email", "==", email_lower)).limit(1).stream()
 
     # Store that data in a documentSnap
     profile_data = next(profile_ref, None)
