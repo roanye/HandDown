@@ -30,3 +30,14 @@ async def get_profile(profile_id: str):
         return profile_data
     else:
         raise HTTPException(status_code=404, detail="Profile not found")
+
+
+@app.get("/profiles")
+async def get_all_profiles():
+    """
+    Retrieves all listings.
+    """
+    profiles = []
+    for doc in db.collection('profiles').stream():
+        profiles.append(doc.to_dict())
+    return profiles

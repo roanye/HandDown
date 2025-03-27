@@ -34,3 +34,7 @@ Profile Access
 curl http://localhost:8000/profile-access/profile_id
 ```
 
+Get All Profiles
+```
+curl http://localhost:8000/profiles
+```
