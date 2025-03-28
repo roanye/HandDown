@@ -139,6 +139,20 @@ async def edit_listing_title(listing_id: str, new_title: str = Form(...)):
         return listing_id
     else:
         raise HTTPException(status_code=404, detail="Invalid Listing")
+    
+@app.post("/edit-listing-description/{listing_id}")
+async def edit_listing_description(listing_id: str, new_desc: str = Form(...)):
+    listing_ref = db.collection('listings').document(listing_id)
+    listing_data = listing_ref.get()
+
+    if listing_data.exists:
+        # Delete listing in DB
+        listing_ref.set({"long_description": new_desc}, merge=True)
+        print("Changed title for", listing_id, "to", new_desc, "!")
+
+        return listing_id
+    else:
+        raise HTTPException(status_code=404, detail="Invalid Listing")
 # @app.put("/listings/{listing_id}")
 # async def update_listing(listing_id: str, title: Optional[str] = None, image: Optional[UploadFile] = File(None)):
 #     """
