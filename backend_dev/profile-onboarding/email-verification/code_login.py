@@ -160,6 +160,8 @@ async def add_basic_info(uid: str, info: BasicInfo):
     
     # Initialize a new empty array for interested listings
     profile_ref.set({"Interested": []}, merge=True)
+    profile_ref.set({"Disliked": []}, merge=True)
+    profile_ref.set({"Messages": []}, merge=True)
 
     # Initialize a new empty array for current listings
     profile_ref.set({"Current_listings": []}, merge=True)
