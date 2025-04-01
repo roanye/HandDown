@@ -57,10 +57,22 @@ Get all Listings:
 curl http://localhost:8000/listings
 ```
 
-Update Listing Title
+Edit Listing Title
 ```
-curl -X POST "http://127.0.0.1:8000/edit-listing-title/uiR4DKUwD9UAPMzJT1lr" \
-  -d "new_title=The fish of Travis"
+curl -X POST "http://127.0.0.1:8000/edit-listing-title/fMrg4bMMVspwzbucAR47" \
+  -d "new_title=Barama"
+```
+
+Edit Listing Description
+```
+curl -X POST "http://127.0.0.1:8000/edit-listing-description/fMrg4bMMVspwzbucAR47" \
+  -d "new_desc=I don't really know what this is but you want it"
+```
+
+Edit Listing Price
+```
+curl -X POST "http://127.0.0.1:8000/edit-price/fMrg4bMMVspwzbucAR47" \
+  -d "new_price=28"
 ```
 
 Delete Listing: NOT IMPLEMENTED AS OF NOW

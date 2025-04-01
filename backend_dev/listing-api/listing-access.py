@@ -153,30 +153,19 @@ async def edit_listing_description(listing_id: str, new_desc: str = Form(...)):
         return listing_id
     else:
         raise HTTPException(status_code=404, detail="Invalid Listing")
-# @app.put("/listings/{listing_id}")
-# async def update_listing(listing_id: str, title: Optional[str] = None, image: Optional[UploadFile] = File(None)):
-#     """
-#     Updates an existing listing.
-#     """
-#     listing_ref = db.collection('listings').document(listing_id)
-#     listing = listing_ref.get()
+    
+@app.post("/edit-price/{listing_id}")
+async def edit_listing_description(listing_id: str, new_price: str = Form(...)):
+    listing_ref = db.collection('listings').document(listing_id)
+    listing_data = listing_ref.get()
 
-#     if listing.exists:
-#         listing_data = listing.to_dict()
+    if listing_data.exists:
+        # Delete listing in DB
+        listing_ref.set({"price": new_price}, merge=True)
+        print("Changed price for", listing_id, "to", new_price, "!")
 
-#         if title is not None:
-#             listing_data['title'] = title
-
-#         if image is not None:
-#             # Upload the new image
-#             image_blob = bucket.blob(f"listings/{listing_id}.jpg")
-#             await image_blob.upload_from_file(image.file)
-#             listing_data['imageUrl'] = f"https://firebasestorage.googleapis.com/v0/b/{bucket.name}/o/listings%2F{listing_id}.jpg?alt=media"
-
-#         # Update the listing in Firestore
-#         listing_ref.update(listing_data)
-
-#         return {"message": "Listing updated successfully"}
-#     else:
-#         raise HTTPException(status_code=404, detail="Listing not found")
+        return listing_id
+    else:
+        raise HTTPException(status_code=404, detail="Invalid Listing")
+        
 
