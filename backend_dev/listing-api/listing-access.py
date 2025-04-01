@@ -63,6 +63,7 @@ async def create_listing(
         "profile_offerer_id": profile_offerer_id,
         "tags": tags,
         "Interested_users": [],
+        "Messages": [],
         "imageUrl": f"https://firebasestorage.googleapis.com/v0/b/{bucket.name}/o/listings%2F{listing_id}%2F{image.filename}?alt=media"
     }
 
