@@ -15,7 +15,7 @@ db = firestore.client()
 
 
 @app.get("/swipe-down/{listing_id}")
-async def swipe_down(profile_id: str, listing_id: str):
+async def swipe_down(uid: str, listing_id: str):
         '''
         Opens conversation 
         '''
@@ -26,10 +26,26 @@ async def swipe_down(profile_id: str, listing_id: str):
         # Step 2: Create new conversation in DB & add necessary fields
         #         See https://docs.google.com/document/d/1MChsV3FbQ5Xd7wRlnSrGiJ8lLh0Ii70dOYyhAj9_SPE/edit?tab=t.0
         # Step 3: Add conversation ID to array in listing document
+
+
+
         # Step 4: Go to both associated profiles and add conversation ID to array
+
+        # Add listing to profile's Messages list
+        profile_ref = db.collection('profiles').document(uid)
+        profile_ref.update({"Messages": firestore.ArrayUnion([listing_id])})
+
+        # Add profile to listings Messages list
+        listing_ref = db.collection('listings').document(listing_id)
+        listing_ref.update({"Messages": firestore.ArrayUnion([uid])})
+
+
         # Step 5: Send some arbitrary message to begin conversation (add this to an array in conversation document)
         #         - Make sure formatting is correct: "R:" - receiving, "O:" - offering
 
+
+        
+        return {"message": "SUPERLIKE! Conversation started.", "uid": uid, "listing_id": listing_id} 
 
 @app.get("/swipe-left/{listing_id}")
 async def swipe_left(uid: str, listing_id: str):
@@ -38,6 +54,10 @@ async def swipe_left(uid: str, listing_id: str):
 
         TO DO: CONNECTS TO MATEO'S ALGORITHM!!!
         '''
+
+        # Add listing to profile's disliked list — FOR MATEO's algo
+        profile_ref = db.collection('profiles').document(uid)
+        profile_ref.update({"Disliked": firestore.ArrayUnion([listing_id])})
         
         return {"message": "Not interested in this listing", "uid": uid, "listing_id": listing_id} 
 
