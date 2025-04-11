@@ -29,7 +29,7 @@ pip install -r requirements.txt
 
 **Running the API**
 
-uvicorn listing-access:app --reload
+uvicorn listing_access:app --reload
 
 **Info**
 
