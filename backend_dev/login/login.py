@@ -1,22 +1,16 @@
-import firebase_admin
-from fastapi import FastAPI, Form, HTTPException
-from firebase_admin import credentials, firestore
+from fastapi import APIRouter, Form, HTTPException
+from firebase_admin import firestore
 from google.cloud.firestore_v1.base_query import FieldFilter
 
-app = FastAPI()
+router = APIRouter()
 
-# Firebase setup
-cred_path = '/Users/sneak100/Desktop/HandDown-creds/handdown-private-key.json'
-cred = credentials.Certificate(cred_path)
-firebase_admin.initialize_app(cred)
-
-db = firestore.client()
-
-@app.post("/login/")
+@router.post("/login/")
 async def login(email: str = Form(...), password: str = Form(...)):
     '''
     Logs a user into their account given an email and password
     '''
+    db = firestore.client()
+
     email_lower = email.lower()
     # Query the database for the inputted email
     profile_ref = db.collection('profiles').where(filter=FieldFilter("email", "==", email_lower)).limit(1).stream()
