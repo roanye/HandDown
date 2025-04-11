@@ -6,11 +6,8 @@ from firebase_admin import credentials, firestore
 router = APIRouter()
 
 # Firebase setup
-cred_path = '/Users/sneak100/Desktop/HandDown-creds/handdown-private-key.json'
-cred = credentials.Certificate(cred_path)
-firebase_admin.initialize_app(cred)
 
-db = firestore.client()
+
 
 
 @router.get("/swipe-down/{listing_id}")
@@ -18,7 +15,8 @@ async def swipe_down(uid: str, listing_id: str):
         '''
         Opens conversation 
         '''
-        print(listing_id)
+        db = firestore.client()
+
         # THIS IS TO BE DONE LATER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         # Step 1: Generate conversation ID
@@ -53,6 +51,7 @@ async def swipe_left(uid: str, listing_id: str):
 
         TO DO: CONNECTS TO MATEO'S ALGORITHM!!!
         '''
+        db = firestore.client()
 
         # Add listing to profile's disliked list — FOR MATEO's algo
         profile_ref = db.collection('profiles').document(uid)
@@ -68,6 +67,7 @@ async def swipe_right(uid: str, listing_id: str):
 
         TO DO: CONNECTS TO MATEO'S ALGORITHM!!!
         '''
+        db = firestore.client()
 
         # Add listing to profile's interested parking lot
         profile_ref = db.collection('profiles').document(uid)
