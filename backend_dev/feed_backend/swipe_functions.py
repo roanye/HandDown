@@ -1,10 +1,9 @@
 import firebase_admin
-from fastapi import FastAPI, File, UploadFile, HTTPException, Form
-from firebase_admin import credentials, storage, initialize_app, firestore
-from typing import Optional, List
-from pydantic import BaseModel
+from fastapi import APIRouter
+from firebase_admin import credentials, firestore
 
-app = FastAPI()
+
+router = APIRouter()
 
 # Firebase setup
 cred_path = '/Users/sneak100/Desktop/HandDown-creds/handdown-private-key.json'
@@ -14,7 +13,7 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 
-@app.get("/swipe-down/{listing_id}")
+@router.get("/swipe-down/{listing_id}")
 async def swipe_down(uid: str, listing_id: str):
         '''
         Opens conversation 
@@ -47,7 +46,7 @@ async def swipe_down(uid: str, listing_id: str):
         
         return {"message": "SUPERLIKE! Conversation started.", "uid": uid, "listing_id": listing_id} 
 
-@app.get("/swipe-left/{listing_id}")
+@router.get("/swipe-left/{listing_id}")
 async def swipe_left(uid: str, listing_id: str):
         '''
         Adds listing IDs to a user's disliked listings
@@ -61,7 +60,7 @@ async def swipe_left(uid: str, listing_id: str):
         
         return {"message": "Not interested in this listing", "uid": uid, "listing_id": listing_id} 
 
-@app.get("/swipe-right/{listing_id}")
+@router.get("/swipe-right/{listing_id}")
 async def swipe_right(uid: str, listing_id: str):
         '''
         Adds listing IDs to a user's liked listings
