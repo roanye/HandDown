@@ -75,7 +75,7 @@ curl -X POST "http://127.0.0.1:8000/edit-price/fMrg4bMMVspwzbucAR47" \
   -d "new_price=28"
 ```
 
-Delete Listing: NOT IMPLEMENTED AS OF NOW
+Delete Listing: 
 ```
 curl -X GET  http://localhost:8000/delete-listing/6QWaFwpuNrXk4KTKo5cD
 ```
