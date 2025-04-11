@@ -1,13 +1,12 @@
 import firebase_admin
-from fastapi import FastAPI, File, UploadFile, HTTPException, Form
-from firebase_admin import credentials, storage, initialize_app, firestore
-from typing import Optional, List
+from fastapi import APIRouter, File, UploadFile, HTTPException, Form
+from firebase_admin import credentials, storage, firestore
 from pydantic import BaseModel
-import os
 from datetime import datetime
 import pytz
 
-app = FastAPI()
+router = APIRouter()
+
 
 cred_path = '/Users/sneak100/Desktop/HandDown-creds/handdown-private-key.json'
 cred = credentials.Certificate(cred_path)
@@ -27,7 +26,7 @@ class ListingInfo(BaseModel):
     transaction_type: str
     tags: str
     
-@app.post("/create-listing")
+@router.post("/create-listing")
 async def create_listing(
     title: str = Form(...),
     long_description: str = Form(...),
@@ -78,7 +77,7 @@ async def create_listing(
     return {"message": "Listing created successfully", "listingId": listing_id}
 
 
-@app.get("/get-listing/{listing_id}")
+@router.get("/get-listing/{listing_id}")
 async def get_listing(listing_id: str):
     """
     Retrieves a listing by its ID.
@@ -92,7 +91,7 @@ async def get_listing(listing_id: str):
     else:
         raise HTTPException(status_code=404, detail="Listing not found")
 
-@app.get("/get-all-listings")
+@router.get("/get-all-listings")
 async def get_all_listings():
     """
     Retrieves all listings.
@@ -103,7 +102,7 @@ async def get_all_listings():
     return listings
 
 
-@app.get("/delete-listing/{listing_id}")
+@router.get("/delete-listing/{listing_id}")
 async def delete_listing(listing_id: str):
     """
     Deletes a listing given a listing_id
@@ -127,7 +126,7 @@ async def delete_listing(listing_id: str):
         raise HTTPException(status_code=404, detail="Invalid Listing")
 
 
-@app.post("/edit-listing-title/{listing_id}")
+@router.post("/edit-listing-title/{listing_id}")
 async def edit_listing_title(listing_id: str, new_title: str = Form(...)):
     listing_ref = db.collection('listings').document(listing_id)
     listing_data = listing_ref.get()
@@ -141,7 +140,7 @@ async def edit_listing_title(listing_id: str, new_title: str = Form(...)):
     else:
         raise HTTPException(status_code=404, detail="Invalid Listing")
     
-@app.post("/edit-listing-description/{listing_id}")
+@router.post("/edit-listing-description/{listing_id}")
 async def edit_listing_description(listing_id: str, new_desc: str = Form(...)):
     listing_ref = db.collection('listings').document(listing_id)
     listing_data = listing_ref.get()
@@ -155,7 +154,7 @@ async def edit_listing_description(listing_id: str, new_desc: str = Form(...)):
     else:
         raise HTTPException(status_code=404, detail="Invalid Listing")
     
-@app.post("/edit-price/{listing_id}")
+@router.post("/edit-price/{listing_id}")
 async def edit_listing_description(listing_id: str, new_price: str = Form(...)):
     listing_ref = db.collection('listings').document(listing_id)
     listing_data = listing_ref.get()
