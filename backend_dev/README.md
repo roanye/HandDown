@@ -114,3 +114,52 @@ curl -X 'POST' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'email=Roan.Yeh@tufts.edu&password=ThisIzHandsD0wnMyFav@ppEver'
 ```
+
+*Onboarding*
+--------
+
+Send a verification email:
+```                
+curl -X 'POST' \
+  http://localhost:8000/onboarding/email-verification/ \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'email=Roan.Yeh@tufts.edu&password=GoFastaP@sta'
+```
+
+INPUTS: Email & password in the above json format
+OUTPUTS/RESULT: Verificaton token created in database that stores code, password, and email
+
+Verify an email (entering code):
+```
+curl http://localhost:8000/onboarding/code-entry/<code>
+```
+INPUTS: Verification Code
+OUTPUTS/RESULT: New profile is created!
+
+Add Basic User Info:
+```                
+curl -X 'POST' 'http://localhost:8000/onboarding/basic-info/UuiiyHX6uWjnqHf5UqhH' \
+  -H 'Content-Type: application/json' \
+  -d '{"fname": "Roan", "lname": "Yeh", "tuftsid": "1374301"}'
+```
+
+Add Profile Photo:
+```                
+curl -X 'POST' \
+  http://localhost:8000/onboarding/profile-photo/UuiiyHX6uWjnqHf5UqhH \
+  -F "image=@/Users/sneak100/Desktop/HandDown/backend_dev/listing_api/test-images/handdown.png"
+```
+Add Interests:
+```
+curl -X 'POST' \
+  'http://localhost:8000/onboarding/profile-interests/UuiiyHX6uWjnqHf5UqhH?interests=Books%20Clothes%20Accessories' \
+  -H 'Content-Type: application/json'
+
+```
+
+Add Offerings:
+```
+curl -X 'POST' \
+  'http://localhost:8000/onboarding/profile-offerings/UuiiyHX6uWjnqHf5UqhH?offerings=Books%20Clothes%20Accessories' \
+  -H 'Content-Type: application/json'
+```

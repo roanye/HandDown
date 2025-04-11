@@ -1,0 +1,8 @@
+uvicorn
+fastapi
+firebase-admin
+pytz
+python-multipart
+pydantic[email]
+secure-smtplib
+httpx
