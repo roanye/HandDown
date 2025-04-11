@@ -1,8 +1,18 @@
 from fastapi import FastAPI
+import firebase_admin
+from firebase_admin import credentials, storage, firestore
 from feed_backend.swipe_functions import router as swiping_router 
 from listing_api.listing_access import router as listing_router 
 
 app = FastAPI()
+
+# Firebase setup
+
+cred_path = '/Users/sneak100/Desktop/HandDown-creds/handdown-private-key.json'
+cred = credentials.Certificate(cred_path)
+firebase_admin.initialize_app(cred, {
+    'storageBucket': 'handdown-listing-photos'
+})
 
 app.include_router(swiping_router, prefix="/feed")
 

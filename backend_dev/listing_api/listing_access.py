@@ -8,15 +8,6 @@ import pytz
 router = APIRouter()
 
 
-cred_path = '/Users/sneak100/Desktop/HandDown-creds/handdown-private-key.json'
-cred = credentials.Certificate(cred_path)
-firebase_admin.initialize_app(cred, {
-    'storageBucket': 'handdown-listing-photos'
-})
-
-db = firestore.client()
-bucket = storage.bucket()
-print(bucket)
 
 class ListingInfo(BaseModel):
     title: str
@@ -40,6 +31,9 @@ async def create_listing(
     """
     Creates a new listing with a title and image.
     """
+    db = firestore.client()
+    bucket = storage.bucket()
+
     # Get time this listing was posted
     time_created = datetime.now(pytz.utc).isoformat()
 
@@ -82,6 +76,8 @@ async def get_listing(listing_id: str):
     """
     Retrieves a listing by its ID.
     """
+    db = firestore.client()
+    
     listing_ref = db.collection('listings').document(listing_id)
     listing = listing_ref.get()
 
@@ -96,6 +92,8 @@ async def get_all_listings():
     """
     Retrieves all listings.
     """
+    db = firestore.client()
+
     listings = []
     for doc in db.collection('listings').stream():
         listings.append(doc.to_dict())
@@ -107,6 +105,7 @@ async def delete_listing(listing_id: str):
     """
     Deletes a listing given a listing_id
     """
+    db = firestore.client()
 
     # TO DO: 
     # - delete all messages related to listing
@@ -128,6 +127,8 @@ async def delete_listing(listing_id: str):
 
 @router.post("/edit-listing-title/{listing_id}")
 async def edit_listing_title(listing_id: str, new_title: str = Form(...)):
+    db = firestore.client()
+
     listing_ref = db.collection('listings').document(listing_id)
     listing_data = listing_ref.get()
 
@@ -142,6 +143,8 @@ async def edit_listing_title(listing_id: str, new_title: str = Form(...)):
     
 @router.post("/edit-listing-description/{listing_id}")
 async def edit_listing_description(listing_id: str, new_desc: str = Form(...)):
+    db = firestore.client()
+
     listing_ref = db.collection('listings').document(listing_id)
     listing_data = listing_ref.get()
 
@@ -156,6 +159,8 @@ async def edit_listing_description(listing_id: str, new_desc: str = Form(...)):
     
 @router.post("/edit-price/{listing_id}")
 async def edit_listing_description(listing_id: str, new_price: str = Form(...)):
+    db = firestore.client()
+    
     listing_ref = db.collection('listings').document(listing_id)
     listing_data = listing_ref.get()
 

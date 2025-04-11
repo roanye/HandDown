@@ -44,7 +44,7 @@ curl -X POST "http://127.0.0.1:8000/create-listing" \
   -F "transaction_type=sell" \
   -F "profile_offerer_id=M1TvCTanfGUlLeTYw3NP" \
   -F "tags=home decor" \
-  -F "image=@/Users/sneak100/Desktop/HandDown/backend_dev/listing-api/test-images/banama.jpeg"
+  -F "image=@/Users/sneak100/Desktop/HandDown/backend_dev/listing_api/test-images/banama.jpeg"
 ```
 
 Get Listing:
