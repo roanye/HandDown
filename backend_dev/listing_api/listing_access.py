@@ -27,7 +27,7 @@ class ListingInfo(BaseModel):
     transaction_type: str
     tags: str
     
-@app.post("/listings")
+@app.post("/create-listing")
 async def create_listing(
     title: str = Form(...),
     long_description: str = Form(...),
@@ -78,7 +78,7 @@ async def create_listing(
     return {"message": "Listing created successfully", "listingId": listing_id}
 
 
-@app.get("/listings/{listing_id}")
+@app.get("/get-listing/{listing_id}")
 async def get_listing(listing_id: str):
     """
     Retrieves a listing by its ID.
@@ -92,7 +92,7 @@ async def get_listing(listing_id: str):
     else:
         raise HTTPException(status_code=404, detail="Listing not found")
 
-@app.get("/listings")
+@app.get("/get-all-listings")
 async def get_all_listings():
     """
     Retrieves all listings.

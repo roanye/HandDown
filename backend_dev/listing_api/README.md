@@ -35,7 +35,7 @@ uvicorn listing-access:app --reload
 
 Create Listing:
 ```
-curl -X POST "http://127.0.0.1:8000/listings" \
+curl -X POST "http://127.0.0.1:8000/create-listing" \
   -H "Content-Type: multipart/form-data" \
   -F "title=Banama" \
   -F "long_description=A classic vintage banama in excellent condition." \
@@ -49,12 +49,12 @@ curl -X POST "http://127.0.0.1:8000/listings" \
 
 Get Listing:
 ```
-curl http://localhost:8000/listings/listing_id
+curl http://localhost:8000/get-listing/listing_id
 ```
 
 Get all Listings:
 ```
-curl http://localhost:8000/listings
+curl http://localhost:8000/get-all-listings
 ```
 
 Edit Listing Title
