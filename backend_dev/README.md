@@ -105,3 +105,12 @@ curl -X GET  http://localhost:8000/listings/delete-listing/6QWaFwpuNrXk4KTKo5cD
 
 *Login*
 --------
+
+Login:
+Login:
+```                
+curl -X 'POST' \
+  http://localhost:8000/login/login/ \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'email=Roan.Yeh@tufts.edu&password=ThisIzHandsD0wnMyFav@ppEver'
+```

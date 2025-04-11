@@ -3,6 +3,7 @@ import firebase_admin
 from firebase_admin import credentials, storage, firestore
 from feed_backend.swipe_functions import router as swiping_router 
 from listing_api.listing_access import router as listing_router 
+from login.login import router as login_router 
 
 app = FastAPI()
 
@@ -17,4 +18,7 @@ firebase_admin.initialize_app(cred, {
 app.include_router(swiping_router, prefix="/feed")
 
 app.include_router(listing_router, prefix="/listings")
+
+app.include_router(login_router, prefix="/login")
+
 
