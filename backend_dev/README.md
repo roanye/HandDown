@@ -167,3 +167,12 @@ curl -X 'POST' \
 *Profile Page*
 --------
 
+Profile Access
+```
+curl http://localhost:8000/profile/profile-access/<profile_id>
+```
+
+Get All Profiles
+```
+curl http://localhost:8000/profile/profiles
+```
