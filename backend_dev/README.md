@@ -163,3 +163,7 @@ curl -X 'POST' \
   'http://localhost:8000/onboarding/profile-offerings/UuiiyHX6uWjnqHf5UqhH?offerings=Books%20Clothes%20Accessories' \
   -H 'Content-Type: application/json'
 ```
+
+*Profile Page*
+--------
+
