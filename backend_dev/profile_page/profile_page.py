@@ -1,6 +1,6 @@
-import firebase_admin
-from fastapi import APIRouter, File, UploadFile, HTTPException, Form
-from firebase_admin import credentials, storage, initialize_app, firestore
+from fastapi import APIRouter, HTTPException
+from firebase_admin import firestore
+from google.cloud.firestore_v1.base_query import FieldFilter
 from typing import Optional, List
 import os
 
@@ -29,10 +29,29 @@ async def get_profile(profile_id: str):
 @router.get("/profiles")
 async def get_all_profiles():
     """
-    Retrieves all listings.
+    Retrieves all profiles.
     """
     db = firestore.client()
     profiles = []
     for doc in db.collection('profiles').stream():
         profiles.append(doc.to_dict())
     return profiles
+
+@router.get("/get-profile-offerings/{profile_id}")
+async def get_profile_offerings(profile_id: str):
+    """
+    Retrieves all listings offered by a specific profile.
+    """
+    db = firestore.client()
+    
+    listing_ref = db.collection('listings')
+
+    query_ref = listing_ref.where(filter=FieldFilter('profile_offerer_id', '==', profile_id))
+
+    query_doc = query_ref.stream()
+
+    query_result = query_doc.to_dict()
+    print(query_result)
+
+    return query_result
+
