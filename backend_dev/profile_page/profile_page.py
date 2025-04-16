@@ -48,10 +48,10 @@ async def get_profile_offerings(profile_id: str):
 
     query_ref = listing_ref.where(filter=FieldFilter('profile_offerer_id', '==', profile_id))
 
+    
     query_doc = query_ref.stream()
 
-    query_result = query_doc.to_dict()
-    print(query_result)
+    query_result = [doc.to_dict() for doc in query_doc]
 
     return query_result
 

@@ -14,8 +14,6 @@ Run command
 pip install -r requirements.txt  
 ```
 
-## Profile Page
-
 **Brief Description:**
 All API calls are mounted here to run through on endpoint.
 
@@ -175,4 +173,9 @@ curl http://localhost:8000/profile/profile-access/<profile_id>
 Get All Profiles
 ```
 curl http://localhost:8000/profile/profiles
+```
+
+Get Profile Offerings
+```
+curl http://localhost:8000/profile/get-profile-offerings/{profile_id}
 ```
