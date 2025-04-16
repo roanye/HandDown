@@ -39,7 +39,7 @@ Get All Profiles
 curl http://localhost:8000/profiles
 ```
 
-Get All Profiles
+Get Profile Offerings
 ```
 curl http://localhost:8000/profiles/get-profile-offerings/{profile_id}
 ```
