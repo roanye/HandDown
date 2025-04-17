@@ -43,7 +43,8 @@ async def swipe_down(uid: str, listing_id: str):
                 "offering_user_id": offerer_id,
                 "receiving_user_id": uid,
                 "listing_id": listing_id,
-                "time_created": time_created
+                "time_created": time_created,
+                "last_updated": time_created
         }
 
         db.collection("conversations").document(conversation_id).set(messaging_data)
