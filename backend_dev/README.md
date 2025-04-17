@@ -181,5 +181,19 @@ curl http://localhost:8000/profile/get-profile-offerings/{profile_id}
 Get all Conversations:
 ```
 curl -X 'GET' \
-  'http://localhost:8000/conversations/get-all-conversations/k6nJjcACWnJcjqwM7emT'
+  'http://localhost:8000/conversations/get-all-conversations/{profile_id}'
+```
+
+Send Message:
+```
+curl -X POST \
+  http://localhost:8000/conversations/send-message/{conversaton_id}/{profile_id} \
+  -H "Content-Type: application/json" \
+  -d '{"message_contents": "hey whats up"}'
+```
+
+Get all Messages:
+```
+curl -X 'GET' \
+  'http://localhost:8000/conversations/get-all-messages/{conversation_id}'
 ```

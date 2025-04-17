@@ -1,7 +1,9 @@
 from fastapi import APIRouter
 from firebase_admin import firestore
 from google.cloud.firestore_v1.base_query import FieldFilter
-import datetime
+from datetime import datetime
+import pytz
+from pydantic import BaseModel
 
 router = APIRouter()
 
@@ -26,14 +28,50 @@ async def get_all_conversations(profile_id: str):
 
     return results
 
+class MessageBody(BaseModel):
+    message_contents: str
 
-# @router.post("/send-message/{conversation_id}/{profile_id}/")
-# async def send_message(conversation_id: str, profile_id: str):
+@router.post("/send-message/{conversation_id}/{profile_id}")
+async def send_message(conversation_id: str, profile_id: str, body: MessageBody):
+    message_contents = body.message_contents
+    db = firestore.client()
+
+    conversation_ref = db.collection('conversations').document(conversation_id)
+    conversation_data = conversation_ref.get()
+
 
     # Update conversaton -- last_updated
 
+    time_sent = datetime.now(pytz.utc).isoformat()
+
+    message = {
+            "sender_id": profile_id,
+            "text": message_contents,
+            "timestamp": time_sent
+    }
+
+    # This adds the message to conversations/{conversation_id}/messages
+    conversation_ref = db.collection('conversations').document(conversation_id)
+
+    conversation_ref.collection("messages").add(message)
+
+    if conversation_data.exists:
+        conversation_ref.set({"last_updated": time_sent}, merge=True)
+
+        return {"message": f"Successfully sent message from {profile_id}!", "time_sent": time_sent}
+
+    return {"message": "ERROR -- converation does not exist!"}
 
 
+@router.get("/get-all-messages/{conversation_id}")
+async def get_all_messages(conversation_id: str):
+    db = firestore.client()
 
-# Update last-updated filed in conversation document
-# Add a new message to conversation messages collection
+    conversation_ref = db.collection('conversations').document(conversation_id).collection('messages')
+    conversation_data = conversation_ref.stream()
+
+    results = [doc.to_dict() for doc in conversation_data]
+
+    results.sort(key=lambda x: x.get("timestamp"), reverse=True)
+
+    return results
