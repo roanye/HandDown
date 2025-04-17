@@ -30,21 +30,18 @@ uvicorn main:app --reload
 *Feed*
 --------
 Swipe right: 
-
 ```
 curl -X 'GET' \
   'http://localhost:8000/feed/swipe-right/<listing-id>?uid=<uid>'
 ```
 
 Swipe left:
-
 ```
 curl -X 'GET' \
   'http://localhost:8000/feed/swipe-left/<listing-id>?uid=<uid>'
 ```
 
 Swipe down:
-
 ```
 curl -X 'GET' \
   'http://localhost:8000/feed/swipe-down/<listing-id>?uid=<uid>'
@@ -78,19 +75,19 @@ Get all Listings:
 curl http://localhost:8000/listings/get-all-listings
 ```
 
-Edit Listing Title
+Edit Listing Title:
 ```
 curl -X POST "http://127.0.0.1:8000/listings/edit-listing-title/fMrg4bMMVspwzbucAR47" \
   -d "new_title=Barama"
 ```
 
-Edit Listing Description
+Edit Listing Description:
 ```
 curl -X POST "http://127.0.0.1:8000/listings/edit-listing-description/fMrg4bMMVspwzbucAR47" \
   -d "new_desc=I don't really know what this is but you want it"
 ```
 
-Edit Listing Price
+Edit Listing Price:
 ```
 curl -X POST "http://127.0.0.1:8000/listings/edit-price/fMrg4bMMVspwzbucAR47" \
   -d "new_price=28"
@@ -104,7 +101,6 @@ curl -X GET  http://localhost:8000/listings/delete-listing/6QWaFwpuNrXk4KTKo5cD
 *Login*
 --------
 
-Login:
 Login:
 ```                
 curl -X 'POST' \
@@ -165,24 +161,24 @@ curl -X 'POST' \
 *Profile Page*
 --------
 
-Profile Access
+Profile Access:
 ```
 curl http://localhost:8000/profile/profile-access/<profile_id>
 ```
 
-Get All Profiles
+Get All Profiles:
 ```
 curl http://localhost:8000/profile/profiles
 ```
 
-Get Profile Offerings
+Get Profile Offerings:
 ```
 curl http://localhost:8000/profile/get-profile-offerings/{profile_id}
 ```
 
 *Conversations*
 
-Get all Conversations
+Get all Conversations:
 ```
 curl -X 'POST' \
   'http://localhost:8000/conversations/get-all-conversations/k6nJjcACWnJcjqwM7emT'
