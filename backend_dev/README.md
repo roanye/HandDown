@@ -180,6 +180,6 @@ curl http://localhost:8000/profile/get-profile-offerings/{profile_id}
 
 Get all Conversations:
 ```
-curl -X 'POST' \
+curl -X 'GET' \
   'http://localhost:8000/conversations/get-all-conversations/k6nJjcACWnJcjqwM7emT'
 ```

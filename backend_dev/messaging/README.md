@@ -30,3 +30,8 @@ uvicorn login:app --reload
 
 **Info**
 
+
+Get all Conversations:
+```
+curl -X 'POST' \
+  'http://localhost:8000/get-all-conversations/k6nJjcACWnJcjqwM7emT'

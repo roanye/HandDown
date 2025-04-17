@@ -5,7 +5,7 @@ import datetime
 
 router = APIRouter()
 
-@router.post("/get-all-conversations/{profile_id}")
+@router.get("/get-all-conversations/{profile_id}")
 async def get_all_conversations(profile_id: str):
     # Step 1: Get profile info
 
@@ -25,16 +25,15 @@ async def get_all_conversations(profile_id: str):
 
 
     return results
-    
-
-# time_created = datetime.now(pytz.utc).isoformat()
-
-#     # 1. Generate a unique ID for the listing
-#     listing_id = db.collection("listings").document().id
 
 
-# @router.post("send-message/{profile_id}")
-# async def send_message
+# @router.post("/send-message/{conversation_id}/{profile_id}/")
+# async def send_message(conversation_id: str, profile_id: str):
+
+    # Update conversaton -- last_updated
+
+
+
 
 # Update last-updated filed in conversation document
 # Add a new message to conversation messages collection
