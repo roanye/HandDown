@@ -179,3 +179,11 @@ Get Profile Offerings
 ```
 curl http://localhost:8000/profile/get-profile-offerings/{profile_id}
 ```
+
+*Conversations*
+
+Get all Conversations
+```
+curl -X 'POST' \
+  'http://localhost:8000/conversations/get-all-conversations/k6nJjcACWnJcjqwM7emT'
+```
