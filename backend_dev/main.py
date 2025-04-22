@@ -6,6 +6,7 @@ from listing_api.listing_access import router as listing_router
 from profile_onboarding.email_verification.code_login import router as onboarding_router 
 from profile_page.profile_page import router as profile_router 
 from messaging.messaging import router as messaging_router 
+from test_files.clear_interactions import router as clear_router 
 
 from login.login import router as login_router 
 
@@ -30,3 +31,5 @@ app.include_router(onboarding_router, prefix="/onboarding")
 app.include_router(profile_router, prefix="/profile")
 
 app.include_router(messaging_router, prefix="/conversations")
+
+app.include_router(clear_router, prefix="/clear")
