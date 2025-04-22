@@ -1,6 +1,7 @@
 import firebase_admin
 from fastapi import APIRouter, File, UploadFile, HTTPException, Form
 from firebase_admin import credentials, storage, firestore
+from google.cloud.firestore_v1.base_query import FieldFilter
 from pydantic import BaseModel
 from datetime import datetime
 import pytz
@@ -107,18 +108,82 @@ async def delete_listing(listing_id: str):
     """
     db = firestore.client()
 
-    # TO DO: 
-    # - delete all messages related to listing
-    # - delete all mentions of listing ID in other profiles
-
-
     listing_ref = db.collection('listings').document(listing_id)
     listing_data = listing_ref.get()
+    profiles_ref = db.collection('profiles')
 
     if listing_data.exists:
+        # Delete Conversations associated with listing
+        results = listing_data.to_dict()
+        conversations = results['Conversations']
+        for conversation in conversations:
+            conversation_ref = db.collection('conversations').document(conversation)
+            conversation_data = conversation_ref.get()
+
+            # Delete all conversation mentions (in profiles)
+            conversation_id_ref = profiles_ref.where(filter=FieldFilter('Conversations', 'array_contains', conversation)).stream()
+
+            for doc in conversation_id_ref:
+                doc.reference.update({
+                    'Conversation': firestore.ArrayRemove([conversation])
+                })
+
+            # Batch delete messages
+            messages_ref = conversation_ref.collection('messages')
+
+            batch = db.batch()
+            for message in messages_ref.stream():
+                batch.delete(message.reference)
+
+            batch.commit()
+
+            if conversation_data.exists:
+                conversation_ref.delete()
+
+            
+        # Delete all mentions of listing is "Interested"
+
+        interested_ref = profiles_ref.where(filter=FieldFilter('Interested', 'array_contains', listing_id)).stream()
+
+        for doc in interested_ref:
+            doc.reference.update({
+                'Interested': firestore.ArrayRemove([listing_id])
+            })
+        print("Deleted Interested Mentions")    
+        # Delete all mentions of listing is "Disliked"
+
+        disliked_ref = profiles_ref.where(filter=FieldFilter('Disliked', 'array_contains', listing_id)).stream()
+
+        for doc in disliked_ref:
+            doc.reference.update({
+                'Disliked': firestore.ArrayRemove([listing_id])
+            })
+        print("Deleted Disliked Mentions")
+        # Delete all mentions of listing is "SuperLiked"
+
+        superliked_ref = profiles_ref.where(filter=FieldFilter('SuperLiked', 'array_contains', listing_id)).stream()
+
+        for doc in superliked_ref:
+            doc.reference.update({
+                'SuperLiked': firestore.ArrayRemove([listing_id])
+            })
+        print("Deleted SuperLiked Mentions")
+    
+        # Delete all mentions of Current_listings
+
+        current_listings_ref = profiles_ref.where(filter=FieldFilter('Current_listings', 'array_contains', listing_id)).stream()
+
+        for doc in current_listings_ref:
+            doc.reference.update({
+                'Current_listings': firestore.ArrayRemove([listing_id])
+            })
+        print("Deleted Current_listings Mentions")
+
         # Delete listing in DB
         db.collection('listings').document(listing_id).delete()
         print("Deleted Listing")
+
+        
 
         return listing_id
     else:
