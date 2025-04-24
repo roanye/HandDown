@@ -75,3 +75,25 @@ async def get_all_messages(conversation_id: str):
     results.sort(key=lambda x: x.get("timestamp"), reverse=True)
 
     return results
+
+@router.get("/delete-conversation/{conversation_id}")
+async def delete_conversation(conversation_id: str):
+    db = firestore.client()
+
+    conversation_ref = db.collection('conversations').document(conversation_id)
+    conversation_data = conversation_ref.get()
+    
+    # Batch delete messages
+    messages_ref = conversation_ref.collection('messages')
+
+    batch = db.batch()
+    for message in messages_ref.stream():
+        batch.delete(message.reference)
+
+    batch.commit()
+
+    if conversation_data.exists:
+        conversation_ref.delete()
+    
+    return {"message": f"Successfully deleted conversation {conversation_id}"}
+    

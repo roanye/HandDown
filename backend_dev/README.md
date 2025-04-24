@@ -198,6 +198,12 @@ curl -X 'GET' \
   'http://localhost:8000/conversations/get-all-messages/{conversation_id}'
 ```
 
+Delete Conversation:
+```
+curl -X 'GET' \
+  'http://localhost:8000/conversations/delete-conversation/{conversation_id}'
+```
+
 *Algo*
 
 Get feed:
