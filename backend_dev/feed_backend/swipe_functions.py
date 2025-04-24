@@ -6,11 +6,6 @@ import pytz
 
 router = APIRouter()
 
-# Firebase setup
-
-
-
-
 @router.get("/swipe-down/{listing_id}")
 async def swipe_down(uid: str, listing_id: str):
     '''
@@ -18,8 +13,20 @@ async def swipe_down(uid: str, listing_id: str):
     '''
     db = firestore.client()
 
-    # Add listing to profile's SuperLiked list -- for Mateo's algorithm
     profile_ref = db.collection('profiles').document(uid)
+
+    # Remove previous rating if there was one
+    profile_ref.update({
+        "Interested": firestore.ArrayRemove([listing_id])
+    })
+
+    profile_ref.update({
+        "Disliked": firestore.ArrayRemove([listing_id])
+    })
+
+
+    # Add listing to profile's SuperLiked list -- for Mateo's algorithm
+    
     profile_ref.update({"SuperLiked": firestore.ArrayUnion([listing_id])})
 
     # Step 0: Grab offerer's ID
@@ -84,13 +91,16 @@ async def swipe_down(uid: str, listing_id: str):
 async def swipe_left(uid: str, listing_id: str):
     '''
     Adds listing IDs to a user's disliked listings
-
-    TO DO: CONNECTS TO MATEO'S ALGORITHM!!!
     '''
     db = firestore.client()
-
-    # Add listing to profile's disliked list — FOR MATEO's algo
     profile_ref = db.collection('profiles').document(uid)
+
+    # Update rating
+    profile_ref.update({
+        "Interested": firestore.ArrayRemove([listing_id])
+    })
+    
+    # Add listing to profile's disliked list — FOR MATEO's algo
     profile_ref.update({"Disliked": firestore.ArrayUnion([listing_id])})
     
     return {"message": "Not interested in this listing", "uid": uid, "listing_id": listing_id} 
@@ -100,13 +110,17 @@ async def swipe_right(uid: str, listing_id: str):
     '''
     Adds listing IDs to a user's liked listings
     * This will show in the "interested parking lot"
-
-    TO DO: CONNECTS TO MATEO'S ALGORITHM!!!
     '''
     db = firestore.client()
+    profile_ref = db.collection('profiles').document(uid)
+
+
+    # Update rating
+    profile_ref.update({
+        "Disliked": firestore.ArrayRemove([listing_id])
+    })
 
     # Add listing to profile's interested parking lot
-    profile_ref = db.collection('profiles').document(uid)
     profile_ref.update({"Interested": firestore.ArrayUnion([listing_id])})
 
     # Add profile to listings interested users
