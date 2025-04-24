@@ -176,6 +176,11 @@ Get Profile Offerings:
 curl http://localhost:8000/profile/get-profile-offerings/{profile_id}
 ```
 
+Remove Interested Listing:
+```
+curl -X 'GET' \
+  'http://localhost:8000/profile/remove-interested/<listing-id>?uid=<uid>'
+```
 *Conversations*
 
 Get all Conversations:

@@ -1,12 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from firebase_admin import firestore
 from google.cloud.firestore_v1.base_query import FieldFilter
-from typing import Optional, List
-import os
 
 router = APIRouter()
-
-
 
 @router.get("/profile-access/{profile_id}")
 async def get_profile(profile_id: str):
@@ -55,3 +51,17 @@ async def get_profile_offerings(profile_id: str):
 
     return query_result
 
+@router.get("/remove-interested/{listing_id}")
+async def remove_interested(uid: str, listing_id: str):
+    '''
+    Removes listing from interested parking lot
+    '''
+    db = firestore.client()
+    profile_ref = db.collection('profiles').document(uid)
+
+    # Update rating
+    profile_ref.update({
+        "Interested": firestore.ArrayRemove([listing_id])
+    })
+    
+    return {"message": "No longer intersted in this listing!", "uid": uid, "listing_id": listing_id} 
