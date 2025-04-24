@@ -6,3 +6,6 @@ python-multipart
 pydantic[email]
 secure-smtplib
 httpx
+pandas
+numpy
+scikit-learn

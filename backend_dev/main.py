@@ -7,8 +7,9 @@ from profile_onboarding.email_verification.code_login import router as onboardin
 from profile_page.profile_page import router as profile_router 
 from messaging.messaging import router as messaging_router 
 from test_files.clear_interactions import router as clear_router 
-
 from login.login import router as login_router 
+from algo.algo_endpoint import router as algo_router
+
 
 app = FastAPI()
 
@@ -33,3 +34,6 @@ app.include_router(profile_router, prefix="/profile")
 app.include_router(messaging_router, prefix="/conversations")
 
 app.include_router(clear_router, prefix="/clear")
+
+app.include_router(algo_router, prefix="/algo")
+
