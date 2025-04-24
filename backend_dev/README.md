@@ -226,3 +226,11 @@ Get search results:
 
 curl -X 'GET' \
   'http://localhost:8000/algo/search/{prompt}'
+
+*Testing Files -- ADMIN ONLY*
+
+Clear Interactions:
+```
+curl -X 'GET' \
+  'http://localhost:8000/clear/clear-interactions'
+```
