@@ -166,6 +166,11 @@ Profile Access:
 curl http://localhost:8000/profile/profile-access/<profile_id>
 ```
 
+Public Profile Access:
+```
+curl http://localhost:8000/profile/public-profile-access/{profile_id}
+```
+
 Get All Profiles:
 ```
 curl http://localhost:8000/profile/profiles
@@ -181,6 +186,7 @@ Remove Interested Listing:
 curl -X 'GET' \
   'http://localhost:8000/profile/remove-interested/<listing-id>?uid=<uid>'
 ```
+
 *Conversations*
 
 Get all Conversations:

@@ -16,6 +16,29 @@ async def get_profile(profile_id: str):
 
     if profile.exists:
         profile_data = profile.to_dict()
+        profile_data.pop("password", None)  # Remove "password" if it exists
+
+        return profile_data
+    else:
+        raise HTTPException(status_code=404, detail="Profile not found")
+
+@router.get("/public-profile-access/{profile_id}")
+async def get_profile(profile_id: str):
+    """
+    Retrieves a profile by its ID.
+    """
+    db = firestore.client()
+
+    profile_ref = db.collection('profiles').document(profile_id)
+    profile = profile_ref.get()
+
+    if profile.exists:
+        profile_data = profile.to_dict()
+        profile_data.pop("password", None) 
+        profile_data.pop("Interested", None)  
+        profile_data.pop("Conversations", None) 
+        profile_data.pop("Disliked", None)  
+        profile_data.pop("Superliked", None)  
 
         return profile_data
     else:
@@ -30,7 +53,9 @@ async def get_all_profiles():
     db = firestore.client()
     profiles = []
     for doc in db.collection('profiles').stream():
-        profiles.append(doc.to_dict())
+        profile = doc.to_dict()
+        profile.pop("password", None)  # Remove "password" if it exists
+        profiles.append(profile)
     return profiles
 
 @router.get("/get-profile-offerings/{profile_id}")
