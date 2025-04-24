@@ -197,3 +197,15 @@ Get all Messages:
 curl -X 'GET' \
   'http://localhost:8000/conversations/get-all-messages/{conversation_id}'
 ```
+
+*Algo*
+
+Get feed:
+
+curl -X 'GET' \
+  'http://localhost:8000/algo/feed/{uid}'
+
+Get search results:
+
+curl -X 'GET' \
+  'http://localhost:8000/algo/search/{prompt}'

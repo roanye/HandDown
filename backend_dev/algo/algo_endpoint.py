@@ -722,13 +722,17 @@ def load_data():
     ratings_df = get_ratings_matrix(profile_features_df, post_similarity_df)
 
 @router.get("/feed/{uid}")
-async def get_feed(user_id: str):
+async def get_feed(uid: str):
     # Load data if not already loaded
+    print("Started")
     if post_features_df is None:
         load_data()
-    
+
+    print("Data Loaded")
+
     # Call your feed function and return the result
-    feed_df = feed_main(user_id, profile_features_df, post_features_df, ratings_df, listing_column_labels)
+    feed_df = feed_main(uid, profile_features_df, post_features_df, ratings_df, listing_column_labels)
+    print("Feed collected")
     # Convert DataFrame to JSON
     if isinstance(feed_df, pd.DataFrame):
         return feed_df.to_dict(orient="records")
