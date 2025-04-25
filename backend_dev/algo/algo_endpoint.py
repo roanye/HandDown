@@ -27,7 +27,7 @@ def get_listings_matrix():
 
     print("Getting listings matrix...")
     # Define the URL
-    listings_url = "http://10.50.47.83:8000/listings/get-all-listings"
+    listings_url = "http://127.0.0.1:8000/listings/get-all-listings"
 
     # Send a GET request to the URL
     response = requests.get(listings_url)
@@ -170,7 +170,7 @@ def get_post_similarity_matrix(post_features_df, num_listings, listing_column_la
 def get_profiles_matrix():
     print("Getting profiles matrix...")
     # Define the URL
-    url = "http://10.50.47.83:8000/profile/profiles"
+    url = "http://127.0.0.1:8000/profile/profiles"
 
     # Send a GET request to the URL
     response = requests.get(url)
