@@ -82,14 +82,15 @@ async def delete_conversation(conversation_id: str):
 
     conversation_ref = db.collection('conversations').document(conversation_id)
     conversation_data = conversation_ref.get()
-    
-    profile1_ref = db.collection('profiles').document(conversation_data['offering_user_id'])
+    conversation_dict = conversation_data.to_dict()
+
+    profile1_ref = db.collection('profiles').document(conversation_dict['offering_user_id'])
 
     profile1_ref.update({
         "Conversations": firestore.ArrayRemove([conversation_id])
     })
 
-    profile2_ref = db.collection('profiles').document(conversation_data['receiving_user_id'])
+    profile2_ref = db.collection('profiles').document(conversation_dict['receiving_user_id'])
 
     profile2_ref.update({
         "Conversations": firestore.ArrayRemove([conversation_id])
