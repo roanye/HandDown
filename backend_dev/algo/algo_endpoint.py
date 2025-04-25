@@ -905,7 +905,18 @@ async def get_feed_listings(user_id: str):
         listing_ids.append(listing['Listing ID'])
 
     list_listings = [await get_listing(listing) for listing in listing_ids]
-    
+
     return list_listings
 
 
+@router.get("/get-search-listings/{query}")
+async def get_search_listings(query: str):
+    search_list = await search(query)
+    
+    listing_ids = []
+    for listing in search_list:
+        listing_ids.append(listing['post_id'])
+
+    list_listings = [await get_listing(listing) for listing in listing_ids]
+
+    return list_listings
