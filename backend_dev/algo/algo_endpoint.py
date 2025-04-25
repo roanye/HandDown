@@ -14,7 +14,7 @@ import requests
 from firebase_admin import firestore
 
 # Import the necessary functions from other modules
-from listing_api.listing_access import get_all_listings
+from listing_api.listing_access import get_all_listings, get_listing
 from profile_page.profile_page import get_all_profiles
 
 
@@ -894,3 +894,18 @@ async def search(query: str):
     if isinstance(search_df, pd.DataFrame):
         return search_df.to_dict(orient="records")
     return {"error": "No search results found"}
+
+
+@router.get("/get-feed-listings/{user_id}")
+async def get_feed_listings(user_id: str):
+    feed_list = await get_feed(user_id)
+    
+    listing_ids = []
+    for listing in feed_list:
+        listing_ids.append(listing['Listing ID'])
+
+    list_listings = [await get_listing(listing) for listing in listing_ids]
+    
+    return list_listings
+
+
