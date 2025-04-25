@@ -14,7 +14,7 @@ async def swipe_down(uid: str, listing_id: str):
     db = firestore.client()
 
     profile_ref = db.collection('profiles').document(uid)
-    profile_ref = db.collection('listings').document(listing_id)
+    listing_ref = db.collection('listings').document(listing_id)
     
     # Remove previous rating if there was one
     profile_ref.update({
