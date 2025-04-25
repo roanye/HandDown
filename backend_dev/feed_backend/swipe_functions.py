@@ -14,7 +14,8 @@ async def swipe_down(uid: str, listing_id: str):
     db = firestore.client()
 
     profile_ref = db.collection('profiles').document(uid)
-
+    profile_ref = db.collection('listings').document(listing_id)
+    
     # Remove previous rating if there was one
     profile_ref.update({
         "Interested": firestore.ArrayRemove([listing_id])
@@ -22,6 +23,11 @@ async def swipe_down(uid: str, listing_id: str):
 
     profile_ref.update({
         "Disliked": firestore.ArrayRemove([listing_id])
+    })
+
+    # Update listing data
+    listing_ref.update({
+        "Interested_users": firestore.ArrayRemove([uid])
     })
 
 
@@ -94,12 +100,18 @@ async def swipe_left(uid: str, listing_id: str):
     '''
     db = firestore.client()
     profile_ref = db.collection('profiles').document(uid)
+    listing_ref = db.collection('listings').document(listing_id)
 
     # Update rating
     profile_ref.update({
         "Interested": firestore.ArrayRemove([listing_id])
     })
     
+    # Update listing data
+    listing_ref.update({
+        "Interested_users": firestore.ArrayRemove([uid])
+    })
+
     # Add listing to profile's disliked list — FOR MATEO's algo
     profile_ref.update({"Disliked": firestore.ArrayUnion([listing_id])})
     

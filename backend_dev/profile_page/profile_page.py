@@ -84,9 +84,17 @@ async def remove_interested(uid: str, listing_id: str):
     db = firestore.client()
     profile_ref = db.collection('profiles').document(uid)
 
+    listing_ref = db.collection('listings').document(listing_id)
+
+
     # Update rating
     profile_ref.update({
         "Interested": firestore.ArrayRemove([listing_id])
+    })
+
+    # Update listing data
+    listing_ref.update({
+        "Interested_users": firestore.ArrayRemove([uid])
     })
     
     return {"message": "No longer intersted in this listing!", "uid": uid, "listing_id": listing_id} 
