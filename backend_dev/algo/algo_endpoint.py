@@ -11,6 +11,11 @@ from datetime import datetime
 import re
 
 import requests
+from firebase_admin import firestore
+
+# Import the necessary functions from other modules
+from listing_api.listing_access import get_all_listings
+from profile_page.profile_page import get_all_profiles
 
 
 router = APIRouter()
@@ -23,64 +28,46 @@ router = APIRouter()
 
 # --- Helper Functions (from notebook code cells) ---
 
-def get_listings_matrix():
-
+async def get_listings_matrix():
     print("Getting listings matrix...")
-    # Define the URL
-    listings_url = "http://127.0.0.1:8000/listings/get-all-listings"
-
-    # Send a GET request to the URL
-    response = requests.get(listings_url)
-    
-    print("Response received!")
-    # Check if the response was successful
-    if response.status_code == 200:
-        # Parse the JSON response
-        data = response.json()
-
-        # DataFrame 2: 10x12 with one column of 0's and 1's, rest empty
+    try:
+        # Get listings directly from the function
+        listings = await get_all_listings()
+        
         listing_column_labels = [
             "Long Description", "Item Type (Category/Tags)", "Listing ID", "Listing/Request", "User ID", 
             "Price", "Date of Posting", "Title/Brief Description", "Transaction Type"
         ]
 
-        # Initialize an empty list to hold the data for each profile
         listings_list = []
 
-        # Loop through each profile and extract relevant fields
-        for listing in data:
-            if (listing.get("id", np.nan) != np.nan):
+        for listing in listings:
+            if listing.get("id"):
                 listing_data = {
-                    "Long Description": str(listing.get("long_description", np.nan)), 
-                    "Item Type (Category/Tags)": str(listing.get("tags", np.nan)), 
-                    "Listing ID": str(listing.get("id", np.nan)), 
-                    "Listing/Request": str(listing.get("listing_type", np.nan)), 
-                    "User ID": str(listing.get("profile_offerer_id", np.nan)), 
-                    "Price": int(listing.get("price", np.nan)), 
-                    "Date of Posting": datetime.fromisoformat(listing.get("time_created", np.nan)),                 "Title/Brief Description": str(listing.get("title", np.nan)),
-                    "Transaction Type": str(listing.get("transaction_type", np.nan))
+                    "Long Description": str(listing.get("long_description", "")), 
+                    "Item Type (Category/Tags)": str(listing.get("tags", "")), 
+                    "Listing ID": str(listing.get("id")), 
+                    "Listing/Request": str(listing.get("listing_type", "")), 
+                    "User ID": str(listing.get("profile_offerer_id", "")), 
+                    "Price": int(listing.get("price", 0)), 
+                    "Date of Posting": datetime.fromisoformat(str(listing.get("time_created", datetime.now()))),
+                    "Title/Brief Description": str(listing.get("title", "")),
+                    "Transaction Type": str(listing.get("transaction_type", ""))
                 }
                 listings_list.append(listing_data)
-                
-        print("Listings list initialized!")
 
-        # Convert the list of profiles to DataFrame 4 (profiles' features)
         post_features_df = pd.DataFrame(listings_list, columns=listing_column_labels)
         post_features_df = post_features_df.set_index("Listing ID", drop=False)
-
-        # Replace "listing" with 1 and "request" with 0 in the "Listing/Request" column
         post_features_df['Listing/Request'] = post_features_df['Listing/Request'].replace({'listing': 1, 'request': 0})
 
-        # Grab the number of listings (rows) and features (columns)
-        num_listings = post_features_df.shape[0]  # Number of rows
-        num_listing_features = post_features_df.shape[1]  # Number of columns
+        num_listings = post_features_df.shape[0]
+        num_listing_features = post_features_df.shape[1]
 
         print("Listings matrix loaded!")
-
         return post_features_df, num_listings, num_listing_features, listing_column_labels
-
-    else:
-        print("Failed to retrieve data:", response.status_code)
+    except Exception as e:
+        print(f"Error in get_listings_matrix: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error loading listings: {str(e)}")
 
 
 def preprocess_text(text):
@@ -167,69 +154,47 @@ def get_post_similarity_matrix(post_features_df, num_listings, listing_column_la
     )
     return post_similarity_df
 
-def get_profiles_matrix():
+async def get_profiles_matrix():
     print("Getting profiles matrix...")
-    # Define the URL
-    url = "http://127.0.0.1:8000/profile/profiles"
-
-    # Send a GET request to the URL
-    response = requests.get(url)
-
-    print("Response received!")
-
-    # Check if the response was successful
-    if response.status_code == 200:
-        # Parse the JSON response
-        data = response.json()
-
+    try:
+        # Get profiles directly from the function
+        profiles = await get_all_profiles()
+        
         profile_column_labels = [
             "Password", "User-ID", "Offerings", "Tufts ID", "Liked", "Interests", 
             "Image URL", "Disliked", "Messages Opened", "Last Name", "Email", "First Name", "Current Listings"
         ]
 
-        # Initialize an empty list to hold the data for each profile
         profiles_list = []
 
-        print("Profiles list initialized!")
-
-        # Loop through each profile and extract relevant fields
-        for profile in data:
-            # print("ANOTHER ONE: \n")
-            # print(profile)
-
-            if pd.notna(profile.get("uid", np.nan)):
+        for profile in profiles:
+            if profile.get("uid"):
                 profile_data = {
-                    "Password": str(profile.get("password", np.nan)), 
-                    "User-ID": str(profile.get("uid", np.nan)), 
-                    "Offerings": str(profile.get("offerings", np.nan)), 
-                    "Tufts ID": str(profile.get("tuftsid", np.nan)), 
-                    "Liked": list(profile.get("Interested", np.nan)), 
-                    "Interests": str(profile.get("interests", np.nan)), 
-                    "Image URL": profile.get("imageUrl", np.nan), 
-                    "Disliked": list(profile.get("Disliked", np.nan)), 
-                    "Messages Opened": list(profile.get("SuperLiked", np.nan)), 
-                    "Last Name": str(profile.get("lname", np.nan)), 
-                    "Email": str(profile.get("email", np.nan)), 
-                    "First Name": str(profile.get("fname", np.nan)), 
-                    "Current Listings": list(profile.get("Current_listings", np.nan))
+                    "Password": str(profile.get("password", "")), 
+                    "User-ID": str(profile.get("uid")), 
+                    "Offerings": str(profile.get("offerings", "")), 
+                    "Tufts ID": str(profile.get("tuftsid", "")), 
+                    "Liked": list(profile.get("Interested", [])), 
+                    "Interests": str(profile.get("interests", "")), 
+                    "Image URL": profile.get("imageUrl", ""), 
+                    "Disliked": list(profile.get("Disliked", [])), 
+                    "Messages Opened": list(profile.get("SuperLiked", [])), 
+                    "Last Name": str(profile.get("lname", "")), 
+                    "Email": str(profile.get("email", "")), 
+                    "First Name": str(profile.get("fname", "")), 
+                    "Current Listings": list(profile.get("Current_listings", []))
                 }
                 profiles_list.append(profile_data)
-        # print(profiles_list)
 
-        print("Profiles list appended!")
-
-        # Convert the list of profiles to DataFrame 4 (profiles' features)
         profile_features_df = pd.DataFrame(profiles_list, columns=profile_column_labels)
-
-        # Grab the number of listings (rows) and features (columns)
-        num_profiles = profile_features_df.shape[0]  # Number of rows
-        num_profile_features = profile_features_df.shape[1]  # Number of columns
+        num_profiles = profile_features_df.shape[0]
+        num_profile_features = profile_features_df.shape[1]
 
         print("Profiles matrix loaded!")
-
         return profile_features_df, num_profiles, num_profile_features, profile_column_labels
-    else:
-        print("Failed to retrieve data:", response.status_code)
+    except Exception as e:
+        print(f"Error in get_profiles_matrix: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error loading profiles: {str(e)}")
 
 
 def get_ratings_matrix(profile_features_df, post_similarity_df):
@@ -836,20 +801,20 @@ profile_column_labels = None
 post_similarity_df = None
 ratings_df = None
 
-def load_data():
+async def load_data():
     global post_features_df, num_listings, num_listing_features, listing_column_labels
     global profile_features_df, num_profiles, num_profile_features, profile_column_labels
     global post_similarity_df, ratings_df
     
     try:
         print("Loading listings data...")
-        post_features_df, num_listings, num_listing_features, listing_column_labels = get_listings_matrix()
+        post_features_df, num_listings, num_listing_features, listing_column_labels = await get_listings_matrix()
         if post_features_df is None or num_listings == 0:
             raise Exception("Failed to load listings data or no listings found")
         print(f"Loaded {num_listings} listings")
         
         print("Loading profiles data...")
-        profile_features_df, num_profiles, num_profile_features, profile_column_labels = get_profiles_matrix()
+        profile_features_df, num_profiles, num_profile_features, profile_column_labels = await get_profiles_matrix()
         if profile_features_df is None or num_profiles == 0:
             raise Exception("Failed to load profiles data or no profiles found")
         print(f"Loaded {num_profiles} profiles")
@@ -881,7 +846,7 @@ async def get_feed(user_id: str):
         # Load data if not already loaded
         if post_features_df is None or post_similarity_df is None or ratings_df is None:
             print("Loading data for the first time...")
-            load_data()
+            await load_data()
         
         # Validate data is loaded
         if post_features_df is None or post_similarity_df is None or ratings_df is None:
@@ -922,7 +887,7 @@ async def get_feed(user_id: str):
 async def search(query: str):
     # Load data if not already loaded
     if post_features_df is None:
-        load_data()
+        await load_data()
         
     # Call your search function and return the result
     search_df = search_main(query, post_features_df)
