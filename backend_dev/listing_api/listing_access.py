@@ -185,7 +185,7 @@ async def delete_listing(listing_id: str):
 
         
 
-        return listing_id
+        return {"message": f"Successfully deleted {listing_id}"}
     else:
         raise HTTPException(status_code=404, detail="Invalid Listing")
 

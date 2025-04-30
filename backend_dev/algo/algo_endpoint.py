@@ -462,7 +462,7 @@ def search_listing_similarity(post_features_df, input_prompt_vector, column_labe
     post_ids = []
 
     # Iterate over the first three rows of post_features_df
-    for index in range(min(4, len(post_features_df))):
+    for index in range(len(post_features_df)):
         curr_row_data = post_features_df.iloc[index].tolist()
 
         # Calculate similarity and append to the array
@@ -912,7 +912,7 @@ async def get_feed_listings(user_id: str):
 @router.get("/get-search-listings/{query}")
 async def get_search_listings(query: str):
     search_list = await search(query)
-    
+    print(search_list)
     listing_ids = []
     for listing in search_list:
         listing_ids.append(listing['post_id'])

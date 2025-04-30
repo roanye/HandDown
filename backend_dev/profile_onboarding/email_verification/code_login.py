@@ -60,28 +60,17 @@ def send_verification_code(request: EmailRequest):
 @router.post("/email-verification/")
 async def email_verification(email: str = Form(...), password: str = Form(...)):
     db = firestore.client()
-
-    """Handles email verification and stores data with Firebase"""
-    url = "http://localhost:8000/onboarding/send-code/"
-    data = {"email": email}
-
-    async with httpx.AsyncClient() as client:  # Using async httpx client
-        response = await client.post(url, json=data)
-
-    if response.status_code != 200:
-        raise HTTPException(status_code=response.status_code, detail="Failed to send verification email")
-
-    response_data = response.json()  # Access the response as JSON
-    print(response_data)
+    # Generate code and send email directly
+    code = generate_code()
+    send_email(email, code)
     verification_data = {
-        'code': response_data["code"],
-        'email': response_data["email"],
+        'code': code,
+        'email': email,
         'password': password
     }
+    db.collection('profile-verifications').document(code).set(verification_data)
+    return {"message": "Successfully stored verification data", "email": email}
 
-    db.collection('profile-verifications').document(response_data["code"]).set(verification_data)
-    
-    return {"message": "Successfully stored verification data", "email": response_data["email"]}
 
 # Retrieve the email and password associated with a specfic code
 @router.get("/code-entry/{code}")
