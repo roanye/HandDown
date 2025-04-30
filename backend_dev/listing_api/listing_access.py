@@ -1,9 +1,10 @@
-import firebase_admin
 from fastapi import APIRouter, File, UploadFile, HTTPException, Form
-from firebase_admin import credentials, storage, firestore
+from firebase_admin import storage, firestore
 from google.cloud.firestore_v1.base_query import FieldFilter
 from pydantic import BaseModel
 from datetime import datetime
+from urllib.parse import unquote
+from urllib.parse import urlparse
 import pytz
 
 router = APIRouter()
@@ -178,6 +179,23 @@ async def delete_listing(listing_id: str):
                 'Current_listings': firestore.ArrayRemove([listing_id])
             })
         print("Deleted Current_listings Mentions")
+
+        # Delete listing photo in DB
+        bucket = storage.bucket()
+        image_url = results['imageUrl']
+
+        parsed_url = urlparse(image_url)
+        path_with_encoding = parsed_url.path.split("/o/")[1]
+        blob_path = unquote(path_with_encoding)  # Now: listings/abc123/myphoto.jpg
+        
+        # Step 2: Delete the blob
+        bucket = storage.bucket()
+        blob = bucket.blob(blob_path)
+
+        print(blob)
+        blob.delete()
+
+        print("Deleted image from storage bucket")
 
         # Delete listing in DB
         db.collection('listings').document(listing_id).delete()
