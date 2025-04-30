@@ -218,14 +218,16 @@ curl -X 'GET' \
 *Algo*
 
 Get feed:
-
+```
 curl -X 'GET' \
-  'http://localhost:8000/algo/feed/{uid}'
+  'http://localhost:8000/algo/get-feed-listings/{uid}'
+```
 
 Get search results:
-
+```
 curl -X 'GET' \
-  'http://localhost:8000/algo/search/{prompt}'
+  'http://localhost:8000/algo/get-search-listings/{prompt}?profile_id=<uid>'
+```
 
 *Testing Files -- ADMIN ONLY*
 

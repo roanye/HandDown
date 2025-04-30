@@ -15,7 +15,7 @@ from firebase_admin import firestore
 
 # Import the necessary functions from other modules
 from listing_api.listing_access import get_all_listings, get_listing
-from profile_page.profile_page import get_all_profiles
+from profile_page.profile_page import get_all_profiles, get_profile
 
 
 router = APIRouter()
@@ -399,7 +399,7 @@ def create_experienced_feed(new_df, seen_df, post_features_df, max_seen_consecut
 
         if pick_new and new_list:
             # Select from top 5 candidates
-            window_size = min(5, len(new_list))
+            window_size = len(new_list)
             candidates = new_list[:window_size]
             chosen = random.choice(candidates)
             
@@ -904,19 +904,48 @@ async def get_feed_listings(user_id: str):
     for listing in feed_list:
         listing_ids.append(listing['Listing ID'])
 
-    list_listings = [await get_listing(listing) for listing in listing_ids]
+    # REMOVE LISTINGS we don't want to see
+    #   - your offerings and listings you have a conversation in
+    profile = await get_profile(user_id)
+
+    exclude_list = profile['Current_listings'] + profile['SuperLiked']
+
+    filtered_listing_ids = [listing for listing in listing_ids if listing not in exclude_list]
+        
+    if len(filtered_listing_ids) == len(listing_ids) - len(exclude_list):
+        print("SUCCESS!")
+    
+    print("Listings excluded!")
+
+    list_listings = [await get_listing(listing) for listing in filtered_listing_ids]
+
+    
 
     return list_listings
 
 
 @router.get("/get-search-listings/{query}")
-async def get_search_listings(query: str):
+async def get_search_listings(query: str, profile_id: str):
+    # RUN ALGO
     search_list = await search(query)
     print(search_list)
     listing_ids = []
     for listing in search_list:
         listing_ids.append(listing['post_id'])
+    
+    # REMOVE LISTINGS we don't want to see
+    #   - your offerings and listings you have a conversation in
+    profile = await get_profile(profile_id)
 
-    list_listings = [await get_listing(listing) for listing in listing_ids]
+    exclude_list = profile['Current_listings'] + profile['SuperLiked']
+
+    filtered_listing_ids = [listing for listing in listing_ids if listing not in exclude_list]
+        
+    if len(filtered_listing_ids) == len(listing_ids) - len(exclude_list):
+        print("SUCCESS!")
+    
+    print("Listings excluded!")
+    # Get all listings
+    list_listings = [await get_listing(listing) for listing in filtered_listing_ids]
 
     return list_listings
