@@ -259,7 +259,7 @@ async def edit_listing_description(listing_id: str, new_price: str = Form(...)):
         
 
 @router.get("/get-all-listings-limited/{uid}")
-async def get_all_listings(uid: str):
+async def get_all_listings_limited(uid: str):
     """
     Retrieves all listings except ones you have already liked and you offer.
     """
