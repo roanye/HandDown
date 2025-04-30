@@ -199,3 +199,5 @@ async def add_user_interests(uid: str, offerings: str):
     profile_ref.set({"offerings": offerings}, merge=True)
 
     return {"message": "Offerings added", "uid": uid}
+
+# FORGOT PASSWORD

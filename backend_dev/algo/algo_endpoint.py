@@ -399,7 +399,7 @@ def create_experienced_feed(new_df, seen_df, post_features_df, max_seen_consecut
 
         if pick_new and new_list:
             # Select from top 5 candidates
-            window_size = len(new_list)
+            window_size = min(5, len(new_list))
             candidates = new_list[:window_size]
             chosen = random.choice(candidates)
             
@@ -915,7 +915,7 @@ async def get_feed_listings(user_id: str):
     if len(filtered_listing_ids) == len(listing_ids) - len(exclude_list):
         print("SUCCESS!")
     
-    print("Listings excluded!")
+    print(f"Listings excluded! -- New list of length {len(filtered_listing_ids)}")
 
     list_listings = [await get_listing(listing) for listing in filtered_listing_ids]
 
@@ -944,7 +944,7 @@ async def get_search_listings(query: str, profile_id: str):
     if len(filtered_listing_ids) == len(listing_ids) - len(exclude_list):
         print("SUCCESS!")
     
-    print("Listings excluded!")
+    print(f"Listings excluded! -- New list of length {len(filtered_listing_ids)}")
     # Get all listings
     list_listings = [await get_listing(listing) for listing in filtered_listing_ids]
 
