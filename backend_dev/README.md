@@ -98,6 +98,11 @@ Delete Listing:
 curl -X GET  http://localhost:8000/listings/delete-listing/6QWaFwpuNrXk4KTKo5cD
 ```
 
+Get all Listings LIMITED :
+```
+curl http://localhost:8000/listings/get-all-listings-limited/{profile-id}
+```
+
 *Login*
 --------
 

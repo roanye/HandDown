@@ -6,7 +6,8 @@ from datetime import datetime
 from urllib.parse import unquote
 from urllib.parse import urlparse
 import pytz
-
+from profile_page.profile_page import get_profile
+ 
 router = APIRouter()
 
 
@@ -257,3 +258,25 @@ async def edit_listing_description(listing_id: str, new_price: str = Form(...)):
         raise HTTPException(status_code=404, detail="Invalid Listing")
         
 
+@router.get("/get-all-listings-limited/{uid}")
+async def get_all_listings(uid: str):
+    """
+    Retrieves all listings except ones you have already liked and you offer.
+    """
+    db = firestore.client()
+
+    profile = await get_profile(uid)
+
+    exclude_list = profile['Current_listings'] + profile['SuperLiked']
+
+    # Remove listings you dont want
+    listings = []
+    for doc in db.collection('listings').stream():
+        listings.append(doc.to_dict())
+    
+    # REMOVE LISTINGS we don't want to see
+    #   - your offerings and listings you have a conversation in
+    filtered_listings = [listing for listing in listings if listing['id'] not in exclude_list]
+        
+    print(f"Listings excluded! -- New list of length {len(filtered_listings)}")
+    return filtered_listings
