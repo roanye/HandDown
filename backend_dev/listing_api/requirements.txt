@@ -1,0 +1,5 @@
+uvicorn
+fastapi
+firebase-admin
+pytz
+python-multipart
