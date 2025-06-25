@@ -202,8 +202,6 @@ async def delete_listing(listing_id: str):
         db.collection('listings').document(listing_id).delete()
         print("Deleted Listing")
 
-        
-
         return {"message": f"Successfully deleted {listing_id}"}
     else:
         raise HTTPException(status_code=404, detail="Invalid Listing")

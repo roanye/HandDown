@@ -1,10 +1,9 @@
 from fastapi import APIRouter, HTTPException, Form, UploadFile, File, Body
-from firebase_admin import credentials, firestore, storage
+from firebase_admin import firestore, storage
 import random
 import smtplib
 from email.mime.text import MIMEText
 from pydantic import BaseModel, EmailStr
-import httpx  
 from typing import TypedDict
 
 
