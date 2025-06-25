@@ -9,13 +9,14 @@ from messaging.messaging import router as messaging_router
 from test_files.clear_interactions import router as clear_router 
 from login.login import router as login_router 
 from algo.algo_endpoint import router as algo_router
+import os
 
 
 app = FastAPI()
 
 # Firebase setup
 
-cred_path = '/Users/sneak100/Desktop/HandDown-creds/handdown-private-key.json'
+cred_path = os.environ.get('FIREBASE_CRED_PATH', 'firebase-key.json')
 cred = credentials.Certificate(cred_path)
 firebase_admin.initialize_app(cred, {
     'storageBucket': 'handdown-listing-photos'
