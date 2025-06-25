@@ -21,6 +21,14 @@ All API calls are mounted here to run through on endpoint.
 
 In progress...
 
+**Setup**
+
+Store your private key:
+
+```
+export FIREBASE_CRED_PATH="/path/to/json/key"
+```
+
 **Running the API**
 
 uvicorn main:app --reload --port=8000 --host=0.0.0.0
