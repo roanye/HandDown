@@ -1,6 +1,5 @@
-import firebase_admin
 from fastapi import APIRouter
-from firebase_admin import credentials, firestore
+from firebase_admin import firestore
 from datetime import datetime
 import pytz
 
@@ -62,7 +61,7 @@ async def swipe_down(uid: str, listing_id: str):
 
     db.collection("conversations").document(conversation_id).set(messaging_data)
 
-    #         See https://docs.google.com/document/d/1MChsV3FbQ5Xd7wRlnSrGiJ8lLh0Ii70dOYyhAj9_SPE/edit?tab=t.0
+    # See https://docs.google.com/document/d/1MChsV3FbQ5Xd7wRlnSrGiJ8lLh0Ii70dOYyhAj9_SPE/edit?tab=t.0
     # Step 3: Add conversation ID to array in listing document
 
     # Add profile to listings Conversations list
