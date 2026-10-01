@@ -7,8 +7,7 @@ A college marketplace app — students list, swipe on, and message each other ab
 ```
 HandDown/
 ├── backend_dev/      FastAPI backend, mounted on Firebase (Firestore + Storage)
-├── frontend_dev/      Expo / React Native app
-└── functions/         (empty placeholder — nothing committed here yet)
+└── frontend_dev/      Expo / React Native app
 ```
 
 ## Backend (`backend_dev/`)
